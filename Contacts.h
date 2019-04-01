@@ -65,7 +65,9 @@ void Contacts::addContact() { // just asking for contact info first
 	std::cin >> input;
 	newContact.name = input;
 	newNode->c = newContact; // puts the new contact onto the new tree node
+
 	// actually adding to the tree now, again alphabetically.
+
 	if (root == nullptr) {
 		root = newNode;
 		return;
@@ -77,12 +79,12 @@ void Contacts::addContact() { // just asking for contact info first
 	while (parse != nullptr) { // puts the parse at the end of the tree
 		newNode->parent = parse;
 		if (parse->c.name < newNode->c.name) { // comparing to a name less than the new name
-			parse = parse->leftChild;
-			isLeft = true;
-		}
-		else if (parse->c.name > newNode->c.name) { // comparing to a name greater than the new name
 			parse = parse->rightChild;
 			isLeft = false;
+		}
+		else if (parse->c.name > newNode->c.name) { // comparing to a name greater than the new name
+			parse = parse->leftChild;
+			isLeft = true;
 		}
 		else if (parse->c.name == newNode->c.name) {
 			std::cout << "Name is the same as another name in the tree, not programmed yet." << std::endl;
