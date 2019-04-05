@@ -68,6 +68,17 @@ void Contacts::printAllContacts() { // prints all of the contacts in the tree.
 	inOrder(root);
 }
 
+void toLowercase(std::string &x) {
+	for (int i = 0; i < x.length(); i++) { // for every letter
+		int ascii = x[i]; // ascii integer for letter
+		if (ascii >= 'A' && ascii <= 'Z') { // if it's capital ascii, 'A' is the same as the ascii value
+			ascii += 32; // add 32 to make lowercase
+		}
+		x[i] = ascii; // the letter is now this new ascii. Converts back to char from int.
+	}
+	return;
+}
+
 void inOrderSearch(treeNode* curr, std::string userInput, Contact* searchHead) {
 	if (curr == nullptr) {
 		return;
@@ -75,20 +86,25 @@ void inOrderSearch(treeNode* curr, std::string userInput, Contact* searchHead) {
 	inOrderSearch(curr->leftChild, userInput, searchHead);
 	// traverse to compare string userInput to spots in the word
 	std::string firstAndLastString = curr->c->firstName + curr->c->lastName;
+	toLowercase(firstAndLastString);
 	int currentIndex = 0;
-	while (userInput.length() + currentIndex < firstAndLastString.length() - 1) { // for every 'spot' the search can fit into
+	while (userInput.length() + currentIndex < firstAndLastString.length() + 1) { // for every 'spot' the search can fit into
 		// check all the letters of userInput with the current spot in firstAndLastString
+		bool isMatch = true;
 		for (int i = 0; i < userInput.length(); i++) {
 			if (userInput[i] == firstAndLastString[currentIndex + i]) {
 				std::cout << "userInput <" << userInput << "> at pos <" << i << "> equals the <" << firstAndLastString[currentIndex + i] << "> in string <" << firstAndLastString << ">" << std::endl;
 			}
+			else {
+				isMatch = false;
+				break; // K - stop comparing at this position if it's not a match, saves tiny bit of time I think
+			}
+		}
+		if (isMatch) {
+			std::cout << firstAndLastString << " matches search term" << std::endl;	
 		}
 		currentIndex++;
-		std::cout << "currentIndex length is " << currentIndex << std::endl;;
 	}
-
-
-
 	inOrderSearch(curr->rightChild, userInput, searchHead);
 }
 
@@ -96,7 +112,8 @@ void Contacts::searchContact() {
 	std::cout << "Type your search term: " << std::endl;
 	// enter a string
 	std::string userInput = "";
-	std::cin >> userInput;
+	std::cin >> userInput; // doesn't support spaces yet
+	toLowercase(userInput);
 	// inorder traversal
 	Contact* searchHead = nullptr;
 	inOrderSearch(root, userInput, searchHead);
