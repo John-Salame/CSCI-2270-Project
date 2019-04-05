@@ -8,6 +8,7 @@ struct Contact { // actual contact
 	std::string phoneNumber = ""; // EX: 303-303-3003
 	std::string birthdate = ""; // EX: 04-06-2001 
 	std::string address = ""; // EX: 50181 South Street, Denver, Colorado
+	Contact* next = nullptr;
 
 };
 
@@ -102,6 +103,12 @@ void inOrderSearch(treeNode* curr, std::string userInput, Contact* searchHead) {
 		}
 		if (isMatch) {
 			std::cout << firstAndLastString << " matches search term" << std::endl;	
+			if (searchHead == nullptr) {
+				searchHead = curr->c; // this is probably 100% wrong way to do this
+			}// I'm trying to make a linked list of all the results to be able to print later
+			else { // but tbh no idea how to with recursive . . . . .
+				searchHead->next = curr->c;
+			}
 		}
 		currentIndex++;
 	}
@@ -118,7 +125,13 @@ void Contacts::searchContact() {
 	Contact* searchHead = nullptr;
 	inOrderSearch(root, userInput, searchHead);
 	// at each step, traverse each letter to find that string
-	
+	Contact* parse = searchHead;
+	std::cout << "printing out the found items -> " << std::endl;
+	while (parse != nullptr) {
+		std::cout << parse->firstName << " <- " << std::endl;
+		parse = parse->next;
+	}
+	std::cout << "done printing " << std::endl;
 	// if found, add to a linked list of contacts
 	// print that ll with options to select
 }
