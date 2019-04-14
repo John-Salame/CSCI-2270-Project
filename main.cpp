@@ -36,10 +36,10 @@ int main(){
 				iCloud.printAllContacts();
 				break;
 			case 2: // User selected to search for an existing contact
-				iCloud.searchContact(); // K - User searches, finds, then can edit or delete is what I'm thinking
+				iCloud.searchByName(); // K - User searches, finds, then can edit or delete is what I'm thinking
 				break;
 			case 3: // User selected to add a new contact
-				iCloud.addContact();
+				iCloud.addByName();
 				break;
 			case 4: // User selected to close the book. Should put saving into here.
 				std::cout << "*closes book*" << std::endl;
