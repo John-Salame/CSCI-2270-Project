@@ -24,12 +24,30 @@ struct treeNode { // used to build tree of contacts, built as if the tree is org
 class Contacts {
 public:
 	Contacts();
-	void printAllContacts();
-	void searchContact();
-	void addContact();
-	void editContact();
-	void deleteContact();
-
+	void printAllContacts(); //this works for any tree
+	void editContact(); //I think this should be in the GUI file with displayContact(). (There is no GUI file yet)
+	void deleteContact(); //this can work for any tree because the algorithm is to replace the deleted node with the leftmost node from the right branch
+	
+	void addByName(); //add a contact to a tree organized by name
+	void searchByName(); //currently finds all contacts with search term in the name and prints them out in in-order fashion
+	//Contact* contactByName(std::string name); //this is what we would use if we do tries to find the names and then choose 1 name to bring up the contact for.
+	
+	void addByNumber(); //add a contact to a tree organized by phone number
+	void searchByNumber(); //print out all the contacts (print their name and phone number) with the search term anywhere in the phone number.
+	//Contact* contactByNumber(std::string name); //this is what we would use if we do tries to find the phone numbers and then choose 1 number to bring up the contact for.
+	
+	void addByEmail(); //add a contact to a tree organized by email
+	void searchByEmail(); //print out all the contacts (print their name and email) with the search term anywhere in the email.
+	//Contact* contactByEmail(std::string name); //this is what we would use if we do tries to find the emails and then choose 1 email to bring up the contact for.
+	
+	void addByBday(); //add a contact to a tree organized by birthday
+	void searchByBday(); //print out all the contacts (print their name and birthday) with the search term anywhere in the birthday.
+	//Contact* contactByBday(std::string name); //this is what we would use if we do tries to find the birthdays and then choose 1 birthdays to bring up the contact for.
+	
+	void addByAddress(); //add a contact to a tree organized by phone number
+	void searchByAddress(); //print out all the contacts (print their name and phone number) with the search term anywhere in the phone number.
+	//Contact* contactByAddress(std::string name); //this is what we would use if we do tries to find the emails and then choose 1 email to bring up the contact for.
+	
 private:
 	treeNode* root; // root of the treeNode
 };
@@ -115,7 +133,7 @@ void inOrderSearch(treeNode* curr, std::string userInput, Contact* searchHead) {
 	inOrderSearch(curr->rightChild, userInput, searchHead);
 }
 
-void Contacts::searchContact() {
+void Contacts::searchByName() {
 	std::cout << "Type your search term: " << std::endl;
 	// enter a string
 	std::string userInput = "";
@@ -136,7 +154,7 @@ void Contacts::searchContact() {
 	// print that ll with options to select
 }
 
-void Contacts::addContact() { // just asking for contact info first
+void Contacts::addByName() { // just asking for contact info first
 	Contact* newContact = new Contact;
 	treeNode* newNode = new treeNode;
 
