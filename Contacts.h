@@ -231,9 +231,23 @@ void Contacts::addByFirstName(Contact* newContact) { // just asking for contact 
 			parse = parse->leftChild;
 			isLeft = true;
 		}
+		//same first name
 		else if (parse->c->firstName == newNode->c->firstName) {
-			std::cout << "Name is the same as another name in the tree, not programmed yet." << std::endl;
-			std::cout << "(supposed to infinite loop since there's nothing else for it to do)" << std::endl;
+			if(newNode->c->lastName < parse->c->lastName)
+			{
+				parse = parse->leftChild;
+			}
+			else if(newNode->c->lastName > parse->c->lastName)
+			{
+				parse = parse->rightChild;
+			}
+			else
+			{
+				std::cout << "This contact already exists! Deleting duplicate..." << std::endl;
+				delete newNode;
+				std::cout << "Duplicate deleted." << std::endl;
+				return;
+			}
 		}
 	}
 	if (isLeft) {
