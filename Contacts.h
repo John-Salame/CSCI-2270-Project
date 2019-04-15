@@ -236,10 +236,12 @@ void Contacts::addByFirstName(Contact* newContact) { // just asking for contact 
 			if(newNode->c->lastName < parse->c->lastName)
 			{
 				parse = parse->leftChild;
+				isLeft = true;
 			}
 			else if(newNode->c->lastName > parse->c->lastName)
 			{
 				parse = parse->rightChild;
+				isLeft = false;
 			}
 			else
 			{
