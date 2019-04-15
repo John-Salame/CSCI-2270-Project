@@ -8,7 +8,6 @@ struct Contact { // actual contact
 	std::string phoneNumber = ""; // EX: 303-303-3003
 	std::string birthdate = ""; // EX: 04-06-2001 
 	std::string address = ""; // EX: 50181 South Street, Denver, Colorado
-	Contact* next = nullptr;
 
 };
 
@@ -29,6 +28,8 @@ public:
 	void addContact();
 	void editContact();
 	void deleteContact();
+
+	Contact* searchResults[1];
 
 private:
 	treeNode* root; // root of the treeNode
@@ -69,7 +70,7 @@ void Contacts::printAllContacts() { // prints all of the contacts in the tree.
 	inOrder(root);
 }
 
-void toLowercase(std::string &x) {
+void toLowercase(std::string &x) { // takes a string, replaces it with lowercase of itself
 	for (int i = 0; i < x.length(); i++) { // for every letter
 		int ascii = x[i]; // ascii integer for letter
 		if (ascii >= 'A' && ascii <= 'Z') { // if it's capital ascii, 'A' is the same as the ascii value
@@ -80,17 +81,15 @@ void toLowercase(std::string &x) {
 	return;
 }
 
-void inOrderSearch(treeNode* curr, std::string userInput, Contact* searchHead) {
+void inOrderSearch(treeNode* curr, std::string userInput) {
 	if (curr == nullptr) {
 		return;
 	}
-	inOrderSearch(curr->leftChild, userInput, searchHead);
-	// traverse to compare string userInput to spots in the word
+	inOrderSearch(curr->leftChild, userInput);
 	std::string firstAndLastString = curr->c->firstName + curr->c->lastName;
 	toLowercase(firstAndLastString);
 	int currentIndex = 0;
 	while (userInput.length() + currentIndex < firstAndLastString.length() + 1) { // for every 'spot' the search can fit into
-		// check all the letters of userInput with the current spot in firstAndLastString
 		bool isMatch = true;
 		for (int i = 0; i < userInput.length(); i++) {
 			if (userInput[i] == firstAndLastString[currentIndex + i]) {
@@ -98,45 +97,27 @@ void inOrderSearch(treeNode* curr, std::string userInput, Contact* searchHead) {
 			}
 			else {
 				isMatch = false;
-				break; // K - stop comparing at this position if it's not a match, saves tiny bit of time I think
-			}
-		}
-		if (isMatch) {
-			std::cout << firstAndLastString << " matches search term" << std::endl;	
-			if (searchHead == nullptr) {
-				searchHead = curr->c; // this is probably 100% wrong way to do this
-			}// I'm trying to make a linked list of all the results to be able to print later
-			else { // but tbh no idea how to with recursive . . . . .
-				searchHead->next = curr->c;
+				break; // stop comparing at this position if it's not a match
 			}
 		}
 		currentIndex++;
+		if (isMatch) {
+			std::cout << "--[ " << firstAndLastString << " matches search term <" << userInput << "> ]--" << std::endl;
+			break; // stop loop if it is a match, else repeating matches get caught twice
+		}
 	}
-	inOrderSearch(curr->rightChild, userInput, searchHead);
+	inOrderSearch(curr->rightChild, userInput);
 }
 
 void Contacts::searchContact() {
 	std::cout << "Type your search term: " << std::endl;
-	// enter a string
 	std::string userInput = "";
 	std::cin >> userInput; // doesn't support spaces yet
 	toLowercase(userInput);
-	// inorder traversal
-	Contact* searchHead = nullptr;
-	inOrderSearch(root, userInput, searchHead);
-	// at each step, traverse each letter to find that string
-	Contact* parse = searchHead;
-	std::cout << "printing out the found items -> " << std::endl;
-	while (parse != nullptr) {
-		std::cout << parse->firstName << " <- " << std::endl;
-		parse = parse->next;
-	}
-	std::cout << "done printing " << std::endl;
-	// if found, add to a linked list of contacts
-	// print that ll with options to select
+	inOrderSearch(root, userInput);
 }
 
-void Contacts::addContact() { // just asking for contact info first
+void Contacts::addContact() { // Alphabetically sorted tree only right now!!!
 	Contact* newContact = new Contact;
 	treeNode* newNode = new treeNode;
 
@@ -145,9 +126,6 @@ void Contacts::addContact() { // just asking for contact info first
 	std::cin >> input;
 	newContact->firstName = input;
 	newNode->c = newContact; // puts the new contact onto the new tree node
-
-	// actually adding to the tree now, again alphabetically.
-
 	if (root == nullptr) {
 		root = newNode;
 		return;
@@ -168,6 +146,7 @@ void Contacts::addContact() { // just asking for contact info first
 		}
 		else if (parse->c->firstName == newNode->c->firstName) {
 			std::cout << "Name is the same as another name in the tree, not programmed yet." << std::endl;
+			std::cout << "(supposed to infinite loop since there's nothing else for it to do)" << std::endl;
 		}
 	}
 	if (isLeft) {
