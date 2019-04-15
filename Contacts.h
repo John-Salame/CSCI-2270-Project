@@ -51,8 +51,6 @@ public:
 	void searchByAddress(); //print out all the contacts (print their name and phone number) with the search term anywhere in the phone number.
 	//Contact* contactByAddress(std::string name); //this is what we would use if we do tries to find the emails and then choose 1 email to bring up the contact for.
 
-	Contact* searchResults[1];
-
 private:
 	treeNode* root; // root of the treeNode
 };
@@ -124,18 +122,8 @@ void inOrderSearch(treeNode* curr, std::string userInput) {
 		}
 		currentIndex++;
 		if (isMatch) {
-<<<<<<< HEAD
 			std::cout << "--[ " << firstAndLastString << " matches search term <" << userInput << "> ]--" << std::endl;
 			break; // stop loop if it is a match, else repeating matches get caught twice
-=======
-			std::cout << firstAndLastString << " matches search term" << std::endl;
-			if (searchHead == nullptr) {
-				searchHead = curr->c; // this is probably 100% wrong way to do this
-			}// I'm trying to make a linked list of all the results to be able to print later
-			else { // but tbh no idea how to with recursive . . . . .
-				searchHead->next = curr->c;
-			}
->>>>>>> 518a6c4031439be79d1d6b0fd7aa7e9001cc511a
 		}
 	}
 	inOrderSearch(curr->rightChild, userInput);
@@ -149,11 +137,7 @@ void Contacts::searchByName() {
 	inOrderSearch(root, userInput);
 }
 
-<<<<<<< HEAD
-void Contacts::addContact() { // Alphabetically sorted tree only right now!!!
-=======
 void Contacts::addByName() { // just asking for contact info first
->>>>>>> 518a6c4031439be79d1d6b0fd7aa7e9001cc511a
 	Contact* newContact = new Contact;
 	treeNode* newNode = new treeNode;
 
@@ -161,9 +145,6 @@ void Contacts::addByName() { // just asking for contact info first
 	std::cout << "What is the new contact's first name? : ";
 	std::cin >> input;
 	newContact->firstName = input;
-<<<<<<< HEAD
-	newNode->c = newContact; // puts the new contact onto the new tree node
-=======
 
 	std::cout << "What is the new contact's last name? : ";
 	std::cin >> input;
@@ -186,7 +167,6 @@ void Contacts::addByName() { // just asking for contact info first
 	std::cout << std::endl << "Added " << newContact->firstName << " to your contact list!" << std::endl; //I moved this up here so it works with root also.
 	// actually adding to the tree now, again alphabetically.
 
->>>>>>> 518a6c4031439be79d1d6b0fd7aa7e9001cc511a
 	if (root == nullptr) {
 		root = newNode;
 		return;
