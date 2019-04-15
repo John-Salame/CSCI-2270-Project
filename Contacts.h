@@ -8,7 +8,6 @@ struct Contact { // actual contact
 	std::string phoneNumber = ""; // EX: 303-303-3003
 	std::string birthdate = ""; // EX: 04-06-2001
 	std::string address = ""; // EX: 50181 South Street, Denver, Colorado
-	Contact* next = nullptr;
 
 };
 
@@ -129,7 +128,8 @@ Contact* Contacts::createContact()
 } //end of createContact function
 
 
-void toLowercase(std::string &x) {
+void toLowercase(std::string x) {
+std::string toLowercase(std::string x) { // takes a string, replaces it with lowercase of itself
 	for (int i = 0; i < x.length(); i++) { // for every letter
 		int ascii = x[i]; // ascii integer for letter
 		if (ascii >= 'A' && ascii <= 'Z') { // if it's capital ascii, 'A' is the same as the ascii value
@@ -137,63 +137,66 @@ void toLowercase(std::string &x) {
 		}
 		x[i] = ascii; // the letter is now this new ascii. Converts back to char from int.
 	}
-	return;
+	return x; // returns back the string
 }
 
-void inOrderSearch(treeNode* curr, std::string userInput, Contact* searchHead) {
+void inOrderSearch(treeNode* curr, std::string userInput) {
 	if (curr == nullptr) {
 		return;
 	}
-	inOrderSearch(curr->leftChild, userInput, searchHead);
-	// traverse to compare string userInput to spots in the word
-	std::string firstAndLastString = curr->c->firstName + curr->c->lastName;
-	toLowercase(firstAndLastString);
-	int currentIndex = 0;
-	while (userInput.length() + currentIndex < firstAndLastString.length() + 1) { // for every 'spot' the search can fit into
-		// check all the letters of userInput with the current spot in firstAndLastString
-		bool isMatch = true;
-		for (int i = 0; i < userInput.length(); i++) {
-			if (userInput[i] == firstAndLastString[currentIndex + i]) {
-				std::cout << "userInput <" << userInput << "> at pos <" << i << "> equals the <" << firstAndLastString[currentIndex + i] << "> in string <" << firstAndLastString << ">" << std::endl;
-			}
-			else {
-				isMatch = false;
-				break; // K - stop comparing at this position if it's not a match, saves tiny bit of time I think
-			}
+	inOrderSearch(curr->leftChild, userInput);
+
+	std::string lowerSearchInput = toLowercase(userInput);
+	std::string lowerFirst = toLowercase(curr->c->firstName); // searches firstName
+	std::string lowerLast = toLowercase(curr->c->lastName); // lowercase lastName
+	std::string lowerAddress = toLowercase(curr->c->address); // lowercase address
+
+	int x = 0;
+	bool found = false;
+
+	while (x < lowerSearchInput.length() && x < lowerFirst.length()) {
+		if (lowerSearchInput[x] != lowerFirst[x]) {
+			break;
 		}
-		if (isMatch) {
-			std::cout << firstAndLastString << " matches search term" << std::endl;
-			if (searchHead == nullptr) {
-				searchHead = curr->c; // this is probably 100% wrong way to do this
-			}// I'm trying to make a linked list of all the results to be able to print later
-			else { // but tbh no idea how to with recursive . . . . .
-				searchHead->next = curr->c;
-			}
-		}
-		currentIndex++;
+		x++;
 	}
-	inOrderSearch(curr->rightChild, userInput, searchHead);
+	if (x == lowerSearchInput.length()) {
+		found = true;
+	}
+	x = 0;
+	while (x < lowerSearchInput.length() && x < lowerLast.length() && !found) { // don't need to search if found already within contact
+		if (lowerSearchInput[x] != lowerLast[x]) {
+			break;
+		}
+		x++;
+	}
+	if (x == lowerSearchInput.length()) {
+		found = true;
+	}
+	x = 0;
+	while (x < lowerSearchInput.length() && x < lowerAddress.length() && !found) {
+		if (lowerSearchInput[x] != lowerAddress[x]) {
+			break;
+		}
+		x++;
+	}
+	if (x == lowerSearchInput.length()) {
+		found = true;
+	}
+	x = 0;
+	
+	if (found) {
+		std::cout << curr->c->firstName << " " << curr->c->lastName << " " << curr->c->address << std::endl;
+	}
+	inOrderSearch(curr->rightChild, userInput);
 }
 
 void Contacts::searchByFirstName() {
 	std::cout << "Type your search term: " << std::endl;
-	// enter a string
 	std::string userInput = "";
 	std::cin >> userInput; // doesn't support spaces yet
 	toLowercase(userInput);
-	// inorder traversal
-	Contact* searchHead = nullptr;
-	inOrderSearch(root, userInput, searchHead);
-	// at each step, traverse each letter to find that string
-	Contact* parse = searchHead;
-	std::cout << "printing out the found items -> " << std::endl;
-	while (parse != nullptr) {
-		std::cout << parse->firstName << " <- " << std::endl;
-		parse = parse->next;
-	}
-	std::cout << "done printing " << std::endl;
-	// if found, add to a linked list of contacts
-	// print that ll with options to select
+	inOrderSearch(root, userInput);
 }
 
 void Contacts::addByFirstName(Contact* newContact) { // just asking for contact info first
@@ -220,6 +223,7 @@ void Contacts::addByFirstName(Contact* newContact) { // just asking for contact 
 		}
 		else if (parse->c->firstName == newNode->c->firstName) {
 			std::cout << "Name is the same as another name in the tree, not programmed yet." << std::endl;
+			std::cout << "(supposed to infinite loop since there's nothing else for it to do)" << std::endl;
 		}
 	}
 	if (isLeft) {
