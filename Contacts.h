@@ -248,16 +248,15 @@ Contact* Contacts::contactByName(std::string input)
 			name += input[i];
 		}
 	}
-	toLowercase(name); //I have to change this to name = toLowerCase(name);
-	std::cout << name << std::endl;
+	name = toLowercase(name);
 
 	treeNode* traverse = root;
 	//go through in BST fashion until a matching full name is found.
 	while(traverse != 0)
 	{
 		std::string firstlast = traverse->c->firstName + traverse->c->lastName;
-		toLowercase(firstlast); //I have to change this to firstlast = toLowercase(firstlast);
-		std::cout << firstlast << std::endl;
+		firstlast = toLowercase(firstlast);
+		
 		if(name == firstlast)
 		{
 			return traverse->c;
