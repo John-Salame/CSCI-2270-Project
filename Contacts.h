@@ -26,7 +26,7 @@ public:
 	void printAllContacts(); //this works for any tree
 	static Contact* createContact(); //create a contact from user input and return the pointer. Can be called as Contacts::createContact() instead of dot notation.
 	void editContact(); //I think this should be in the GUI file with displayContact(). (There is no GUI file yet)
-	void deleteContact(); //this can work for any tree because the algorithm is to replace the deleted node with the leftmost node from the right branch
+	void deleteTreeNode(treeNode* del); //this can work for any tree because the algorithm is to replace the deleted node with the leftmost node from the right branch
 
 	void displayContact(Contact* c); //temporary function; this should probably be in GUI and it should make data fields instead of printing.
 
@@ -36,7 +36,7 @@ public:
 	void addByLastName(Contact* newContact); //add a contact to a tree organized by last name. Linked lists are alphabetical by first name.
 	void searchByLastName(); //currently finds all contacts with search term in the name and prints them out in in-order fashion
 
-	Contact* contactByName(std::string name); //pass in the full name of the contact and return the pointer to it.
+	treeNode* treeNodeByName(std::string name); //pass in the full name of the contact and return the pointer to it.
 
 	void addByNumber(Contact* newContact); //add a contact to a tree organized by phone number
 	void searchByNumber(); //print out all the contacts (print their name and phone number) with the search term anywhere in the phone number.
@@ -193,7 +193,7 @@ void inOrderSearch(treeNode* curr, std::string userInput) {
 		found = true;
 	}
 	x = 0;
-	
+
 	if (found) {
 		std::cout << curr->c->firstName << " " << curr->c->lastName << " " << curr->c->address << std::endl;
 	}
@@ -261,8 +261,10 @@ void Contacts::addByFirstName(Contact* newContact) { // just asking for contact 
 
 }
 
-/* Return null if the contact is not found */
-Contact* Contacts::contactByName(std::string input)
+/* Find a treeNode based on contact name.
+For use in deleting and editing (so we can shift nodes around in trees after details change).
+Return null if the contact is not found */
+treeNode* Contacts::treeNodeByName(std::string input)
 {
 	std::string name;
 	//transfer input to name with no spaces
@@ -281,10 +283,10 @@ Contact* Contacts::contactByName(std::string input)
 	{
 		std::string firstlast = traverse->c->firstName + traverse->c->lastName;
 		firstlast = toLowercase(firstlast);
-		
+
 		if(name == firstlast)
 		{
-			return traverse->c;
+			return traverse;
 		}
 		else if(name < firstlast)
 		{
@@ -304,8 +306,88 @@ void Contacts::editContact() {
 
 }
 
-void Contacts::deleteContact() {
+//helper function for deleteContact(); del is the treeNode to delete. this will only be called if del exists.
+treeNode* findReplacement(treeNode* del)
+{
+	treeNode* traverse = del;
 
+	if(del->rightChild == 0 && del->leftChild == 0)
+	{
+		return 0;
+	}
+	else if(del->rightChild != 0) //del has a rightChild
+	{
+		traverse = traverse->rightChild; //start in right branch and find the leftmost leaf during the while loop
+	}
+	else //no right child; replace del with its leftChild
+	{
+		return del->leftChild;
+	}
+
+	while(traverse->leftChild != 0)
+	{
+		traverse = traverse->leftChild;
+	}
+
+	return traverse;
+}
+
+void Contacts::deleteTreeNode(treeNode* del) {
+	//edge case: tree is empty or del does not exist
+	if(del == 0)
+	{
+		std::cout << "Nothing to delete." << std::endl;
+		return;
+	}
+
+	treeNode* rep = findReplacement(del); //leftmost leaf of the right child of del (or the left branch if rightChild is null), or null if del has no children
+
+	if(del->parent == 0) //root is being deleted
+	{
+		root = rep;
+	}
+
+	if(rep != 0)
+	{
+		//make the parent of rep stop pointing to it.
+		if(rep != del->leftChild && rep == rep->parent->leftChild) //rep is a left child. This is necessary if rep is in the middle of the right branch
+		{
+			rep->parent->leftChild = rep->rightChild;
+		}
+		else if(rep == rep->parent->rightChild) //rep is a right child (this should only happen if rep is the child of what we are deleting)
+		{
+			del->rightChild = rep->rightChild;
+		}
+
+
+		//put the replacement contact where the soon-to-be-deleted contact was.
+		rep->parent = del->parent;
+		if(rep != del->leftChild)
+		{
+			rep->leftChild = del->leftChild;
+			rep->rightChild = del->rightChild;
+		}
+	}
+
+	//make the parent of del point to rep (or null if rep doesn't exist)
+	if(del->parent != 0)
+	{
+		if(del == del->parent->leftChild) //del is a left child
+		{
+			del->parent->leftChild = rep;
+		}
+		else //del is a right child
+		{
+			del->parent->rightChild = rep;
+		}
+	}
+
+	//delete del whether or not there is a replacement. Make del stop pointing to things in case anything in another part of the program is still pointing to del.
+	del->parent = 0;
+	del->leftChild = 0;
+	del->rightChild = 0;
+	delete del;
+	del = 0;
 }
 
 //In the future, this will show every aspect of the contact on the GUI. This might actually just be another form of editContact.
