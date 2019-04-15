@@ -64,11 +64,11 @@ Contacts::Contacts() {
 	root = nullptr; // initializes root as nullptr
 }
 
-void inOrder(treeNode* curr) { // prints all entries inOrder.
+void printInOrder(treeNode* curr) { // prints all entries inOrder.
 	if (curr == nullptr) {
 		return;
 	}
-	inOrder(curr->leftChild);
+	printInOrder(curr->leftChild);
 	if (curr->c->firstName == "") {
 		std::cout << "<emptyFirstName> ";
 	}
@@ -88,11 +88,11 @@ void inOrder(treeNode* curr) { // prints all entries inOrder.
 		std::cout << "- " << curr->c->phoneNumber << " ";
 	}
 	std::cout << std::endl;
-	inOrder(curr->rightChild);
+	printInOrder(curr->rightChild);
 }
 
 void Contacts::printAllContacts() { // prints all of the contacts in the tree.
-	inOrder(root);
+	printInOrder(root);
 }
 
 //static function, called with Contacts::createContact() instead of iCloud.createContact()
@@ -128,7 +128,6 @@ Contact* Contacts::createContact()
 } //end of createContact function
 
 
-void toLowercase(std::string x) {
 std::string toLowercase(std::string x) { // takes a string, replaces it with lowercase of itself
 	for (int i = 0; i < x.length(); i++) { // for every letter
 		int ascii = x[i]; // ascii integer for letter
@@ -154,7 +153,7 @@ void inOrderSearch(treeNode* curr, std::string userInput) {
 	int x = 0;
 	bool found = false;
 
-	while (x < lowerSearchInput.length() && x < lowerFirst.length()) {
+	while (x < lowerSearchInput.length() && x < lowerFirst.length()) { // searches firstname
 		if (lowerSearchInput[x] != lowerFirst[x]) {
 			break;
 		}
@@ -165,7 +164,7 @@ void inOrderSearch(treeNode* curr, std::string userInput) {
 	}
 	x = 0;
 	while (x < lowerSearchInput.length() && x < lowerLast.length() && !found) { // don't need to search if found already within contact
-		if (lowerSearchInput[x] != lowerLast[x]) {
+		if (lowerSearchInput[x] != lowerLast[x]) { // searches lastname
 			break;
 		}
 		x++;
@@ -175,7 +174,17 @@ void inOrderSearch(treeNode* curr, std::string userInput) {
 	}
 	x = 0;
 	while (x < lowerSearchInput.length() && x < lowerAddress.length() && !found) {
-		if (lowerSearchInput[x] != lowerAddress[x]) {
+		if (lowerSearchInput[x] != lowerAddress[x]) { // searches address
+			break;
+		}
+		x++;
+	}
+	if (x == lowerSearchInput.length()) {
+		found = true;
+	}
+	x = 0;
+	while (x < lowerSearchInput.length() && x < curr->c->phoneNumber.length() && !found) {
+		if (lowerSearchInput[x] != curr->c->phoneNumber[x]) { // searches phone number
 			break;
 		}
 		x++;
@@ -188,6 +197,7 @@ void inOrderSearch(treeNode* curr, std::string userInput) {
 	if (found) {
 		std::cout << curr->c->firstName << " " << curr->c->lastName << " " << curr->c->address << std::endl;
 	}
+
 	inOrderSearch(curr->rightChild, userInput);
 }
 
@@ -234,7 +244,6 @@ void Contacts::addByFirstName(Contact* newContact) { // just asking for contact 
 	}
 
 }
-
 
 /* Return null if the contact is not found */
 Contact* Contacts::contactByName(std::string input)
