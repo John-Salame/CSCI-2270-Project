@@ -24,16 +24,21 @@ class Contacts {
 public:
 	Contacts();
 	void printAllContacts(); //this works for any tree
+	static Contact* createContact(); //create a contact from user input and return the pointer. Can be called as Contacts::createContact() instead of dot notation.
 	void editContact(); //I think this should be in the GUI file with displayContact(). (There is no GUI file yet)
 	void deleteContact(); //this can work for any tree because the algorithm is to replace the deleted node with the leftmost node from the right branch
 
 	void displayContact(Contact* c); //temporary function; this should probably be in GUI and it should make data fields instead of printing.
 
-	void addByName(); //add a contact to a tree organized by name
-	void searchByName(); //currently finds all contacts with search term in the name and prints them out in in-order fashion
-	Contact* contactByName(std::string name); //this is what we would use if we do tries to find the names and then choose 1 name to bring up the contact for.
+	void addByFirstName(Contact* newContact); //add a contact to a tree organized by first name. LInked lists are alphabetical by last name.
+	void searchByFirstName(); //currently finds all contacts with search term in the name and prints them out in in-order fashion
 
-	void addByNumber(); //add a contact to a tree organized by phone number
+	void addByLastName(Contact* newContact); //add a contact to a tree organized by last name. Linked lists are alphabetical by first name.
+	void searchByLastName(); //currently finds all contacts with search term in the name and prints them out in in-order fashion
+
+	Contact* contactByName(std::string name); //pass in the full name of the contact and return the pointer to it.
+
+	void addByNumber(Contact* newContact); //add a contact to a tree organized by phone number
 	void searchByNumber(); //print out all the contacts (print their name and phone number) with the search term anywhere in the phone number.
 	//Contact* contactByNumber(std::string name); //this is what we would use if we do tries to find the phone numbers and then choose 1 number to bring up the contact for.
 
@@ -43,11 +48,11 @@ public:
 	//Contact* contactByEmail(std::string name); //this is what we would use if we do tries to find the emails and then choose 1 email to bring up the contact for.
 	*/
 
-	void addByBday(); //add a contact to a tree organized by birthday
+	void addByBday(Contact* newContact); //add a contact to a tree organized by birthday
 	void searchByBday(); //print out all the contacts (print their name and birthday) with the search term anywhere in the birthday.
 	//Contact* contactByBday(std::string name); //this is what we would use if we do tries to find the birthdays and then choose 1 birthdays to bring up the contact for.
 
-	void addByAddress(); //add a contact to a tree organized by phone number
+	void addByAddress(Contact* newContact); //add a contact to a tree organized by phone number
 	void searchByAddress(); //print out all the contacts (print their name and phone number) with the search term anywhere in the phone number.
 	//Contact* contactByAddress(std::string name); //this is what we would use if we do tries to find the emails and then choose 1 email to bring up the contact for.
 
@@ -90,6 +95,40 @@ void Contacts::printAllContacts() { // prints all of the contacts in the tree.
 	inOrder(root);
 }
 
+//static function, called with Contacts::createContact() instead of iCloud.createContact()
+Contact* Contacts::createContact()
+{
+	Contact* newContact = new Contact;
+
+	std::string input;
+	std::cout << "What is the new contact's first name? : ";
+	std::cin >> input;
+	newContact->firstName = input;
+
+	std::cout << "What is the new contact's last name? : ";
+	std::cin >> input;
+	newContact->lastName = input;
+
+	std::cout << "What is the new contact's phone number? Enter in xxx-xxx-xxxx format : ";
+	std::cin >> input;
+	newContact->phoneNumber = input;
+
+	std::cout << "What is the new contact's birthdate? Enter in mm/dd/yyyy form : ";
+	std::cin >> input;
+	newContact->birthdate = input;
+
+	std::cout << "What is the new contact's address? : ";
+	getline(std::cin, input); //clear the \n left over from the >>
+	getline(std::cin, input); //actually get the address
+	newContact->address = input;
+
+	std::cout << std::endl << "Added " << newContact->firstName << " to your contact list!" << std::endl; //I moved this up here so it works with root also.
+
+	return newContact;
+} //end of createContact function
+
+
+void toLowercase(std::string x) {
 std::string toLowercase(std::string x) { // takes a string, replaces it with lowercase of itself
 	for (int i = 0; i < x.length(); i++) { // for every letter
 		int ascii = x[i]; // ascii integer for letter
@@ -152,7 +191,7 @@ void inOrderSearch(treeNode* curr, std::string userInput) {
 	inOrderSearch(curr->rightChild, userInput);
 }
 
-void Contacts::searchByName() {
+void Contacts::searchByFirstName() {
 	std::cout << "Type your search term: " << std::endl;
 	std::string userInput = "";
 	std::cin >> userInput; // doesn't support spaces yet
@@ -160,35 +199,9 @@ void Contacts::searchByName() {
 	inOrderSearch(root, userInput);
 }
 
-void Contacts::addByName() { // just asking for contact info first
-	Contact* newContact = new Contact;
+void Contacts::addByFirstName(Contact* newContact) { // just asking for contact info first
 	treeNode* newNode = new treeNode;
-
-	std::string input;
-	std::cout << "What is the new contact's first name? : ";
-	std::cin >> input;
-	newContact->firstName = input;
-
-	std::cout << "What is the new contact's last name? : ";
-	std::cin >> input;
-	newContact->lastName = input;
-
-	std::cout << "What is the new contact's phone number? Enter in xxx-xxx-xxxx format : ";
-	std::cin >> input;
-	newContact->phoneNumber = input;
-
-	std::cout << "What is the new contact's birthdate? Enter in mm/dd/yyyy form : ";
-	std::cin >> input;
-	newContact->birthdate = input;
-
-	std::cout << "What is the new contact's address? : ";
-	getline(std::cin, input); //clear the \n left over from the >>
-	getline(std::cin, input); //actually get the address
-	newContact->address = input;
-
-	newNode->c = newContact; // puts the new contact onto the new tree node
-	std::cout << std::endl << "Added " << newContact->firstName << " to your contact list!" << std::endl; //I moved this up here so it works with root also.
-	// actually adding to the tree now, again alphabetically.
+	newNode->c = newContact; // puts the new contact into the new tree node
 
 	if (root == nullptr) {
 		root = newNode;
@@ -235,14 +248,16 @@ Contact* Contacts::contactByName(std::string input)
 			name += input[i];
 		}
 	}
-	toLowercase(name);
+	toLowercase(name); //I have to change this to name = toLowerCase(name);
+	std::cout << name << std::endl;
 
 	treeNode* traverse = root;
 	//go through in BST fashion until a matching full name is found.
 	while(traverse != 0)
 	{
 		std::string firstlast = traverse->c->firstName + traverse->c->lastName;
-		toLowercase(firstlast);
+		toLowercase(firstlast); //I have to change this to firstlast = toLowercase(firstlast);
+		std::cout << firstlast << std::endl;
 		if(name == firstlast)
 		{
 			return traverse->c;
