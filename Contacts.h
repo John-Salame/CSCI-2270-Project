@@ -90,7 +90,7 @@ void Contacts::printAllContacts() { // prints all of the contacts in the tree.
 	inOrder(root);
 }
 
-void toLowercase(std::string &x) { // takes a string, replaces it with lowercase of itself
+std::string toLowercase(std::string x) { // takes a string, replaces it with lowercase of itself
 	for (int i = 0; i < x.length(); i++) { // for every letter
 		int ascii = x[i]; // ascii integer for letter
 		if (ascii >= 'A' && ascii <= 'Z') { // if it's capital ascii, 'A' is the same as the ascii value
@@ -98,7 +98,7 @@ void toLowercase(std::string &x) { // takes a string, replaces it with lowercase
 		}
 		x[i] = ascii; // the letter is now this new ascii. Converts back to char from int.
 	}
-	return;
+	return x; // returns back the string
 }
 
 void inOrderSearch(treeNode* curr, std::string userInput) {
@@ -106,25 +106,48 @@ void inOrderSearch(treeNode* curr, std::string userInput) {
 		return;
 	}
 	inOrderSearch(curr->leftChild, userInput);
-	std::string firstAndLastString = curr->c->firstName + curr->c->lastName;
-	toLowercase(firstAndLastString);
-	int currentIndex = 0;
-	while (userInput.length() + currentIndex < firstAndLastString.length() + 1) { // for every 'spot' the search can fit into
-		bool isMatch = true;
-		for (int i = 0; i < userInput.length(); i++) {
-			if (userInput[i] == firstAndLastString[currentIndex + i]) {
-				std::cout << "userInput <" << userInput << "> at pos <" << i << "> equals the <" << firstAndLastString[currentIndex + i] << "> in string <" << firstAndLastString << ">" << std::endl;
-			}
-			else {
-				isMatch = false;
-				break; // stop comparing at this position if it's not a match
-			}
+
+	std::string lowerSearchInput = toLowercase(userInput);
+	std::string lowerFirst = toLowercase(curr->c->firstName); // searches firstName
+	std::string lowerLast = toLowercase(curr->c->lastName); // lowercase lastName
+	std::string lowerAddress = toLowercase(curr->c->address); // lowercase address
+
+	int x = 0;
+	bool found = false;
+
+	while (x < lowerSearchInput.length() && x < lowerFirst.length()) {
+		if (lowerSearchInput[x] != lowerFirst[x]) {
+			break;
 		}
-		currentIndex++;
-		if (isMatch) {
-			std::cout << "--[ " << firstAndLastString << " matches search term <" << userInput << "> ]--" << std::endl;
-			break; // stop loop if it is a match, else repeating matches get caught twice
+		x++;
+	}
+	if (x == lowerSearchInput.length()) {
+		found = true;
+	}
+	x = 0;
+	while (x < lowerSearchInput.length() && x < lowerLast.length() && !found) { // don't need to search if found already within contact
+		if (lowerSearchInput[x] != lowerLast[x]) {
+			break;
 		}
+		x++;
+	}
+	if (x == lowerSearchInput.length()) {
+		found = true;
+	}
+	x = 0;
+	while (x < lowerSearchInput.length() && x < lowerAddress.length() && !found) {
+		if (lowerSearchInput[x] != lowerAddress[x]) {
+			break;
+		}
+		x++;
+	}
+	if (x == lowerSearchInput.length()) {
+		found = true;
+	}
+	x = 0;
+	
+	if (found) {
+		std::cout << curr->c->firstName << " " << curr->c->lastName << " " << curr->c->address << std::endl;
 	}
 	inOrderSearch(curr->rightChild, userInput);
 }
