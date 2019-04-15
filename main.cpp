@@ -21,7 +21,8 @@ void m() { // main menu
 }
 
 int main(){
-	Contacts iCloud; // named the main book iCloud, because why not!
+	Contacts iCloud; //replace this with one Contacts object per tree.
+	Contact* newNode = 0; //for use in adding contacts
 	Contact* edit = 0; //the contact returned by contactByName (or other variation)
 	std::string input; //the string that you use to in (4) to search for a Contact and return a pointer to it.
 
@@ -40,10 +41,12 @@ int main(){
 				iCloud.printAllContacts();
 				break;
 			case 2: // User selected to search for an existing contact
-				iCloud.searchByName(); // K - User searches, finds, then can edit or delete is what I'm thinking
+				iCloud.searchByFirstName(); // K - User searches, finds, then can edit or delete is what I'm thinking
+				//iCLoud.searchByLastName(); //uncomment this after we implement it.
 				break;
 			case 3: // User selected to add a new contact
-				iCloud.addByName();
+				newNode = Contacts::createContact();
+				iCloud.addByFirstName(newNode);
 				break;
 			case 4:
 				std::cout << "Enter the full name of the contact (this will be replaced by clicking a name later)" << std::endl;
