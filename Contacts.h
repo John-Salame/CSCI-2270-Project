@@ -51,7 +51,7 @@ public:
 
 private:
 	// the 'print all' tree is currently sorted by:
-	treeNode* currentlySortedBy;
+	treeNode* *currentlySortedBy;
 	treeNode* firstNameRoot; // root of the tree sorted by first names
 	treeNode* lastNameRoot; // root of the tree sorted by last names
 	treeNode* birthdateRoot; // root of the tree sorted by birthday -> can make more of these easily
@@ -60,7 +60,7 @@ private:
  //// //// /////
  //// CONSTRUCTOR
 Contacts::Contacts() {
-	currentlySortedBy = nullptr; // initializes root as nullptr
+	*currentlySortedBy = nullptr; // initializes root as nullptr
 	firstNameRoot = nullptr;
 	lastNameRoot = nullptr;
 	birthdateRoot = nullptr;
@@ -96,7 +96,7 @@ void printInOrder(treeNode* curr) { // prints all entries inOrder based on which
 }
 
 void Contacts::printAllContacts() { // prints all of the contacts in the tree.
-	printInOrder(currentlySortedBy);
+	printInOrder(*currentlySortedBy);
 }
 
 //In the future, this will show every aspect of the contact on the GUI. This might actually just be another form of editContact.
@@ -373,9 +373,10 @@ void Contacts::createContact(){
 	getline(std::cin, input); //actually get the address
 	newContact->address = input;
 
-	treeNode* firstNode;
-	treeNode* lastNode;
-	treeNode* birthNode;
+	treeNode* firstNode = new treeNode;
+	treeNode* lastNode = new treeNode;
+	treeNode* birthNode = new treeNode;
+
 	firstNode->c = newContact;
 	lastNode->c = newContact;
 	birthNode->c = newContact;
@@ -387,6 +388,7 @@ void Contacts::createContact(){
 	addToLastTree(lastNode);
 	addToBirthTree(birthNode);
 
+	*currentlySortedBy = firstNameRoot;
 	std::cout << std::endl << "Added " << newContact->firstName << " to your contact list!" << std::endl; //I moved this up here so it works with root also.
 } //end of createContact function
 
@@ -434,7 +436,7 @@ void Contacts::deleteTreeNode(treeNode* del) {
 
 	if(del->parent == 0) //root is being deleted
 	{
-		currentlySortedBy = rep;
+		*currentlySortedBy = rep;
 	}
 
 	if(rep != 0)
