@@ -96,7 +96,12 @@ void printInOrder(treeNode* curr) { // prints all entries inOrder based on which
 }
 
 void Contacts::printAllContacts() { // prints all of the contacts in the tree.
-	printInOrder(*currentlySortedBy);
+	std::cout << "By First Name -- " << std::endl;
+	printInOrder(firstNameRoot);
+	std::cout << "By Last Name -- " << std::endl;
+	printInOrder(lastNameRoot);
+	std::cout << "By Birthdate hehe --" << std::endl;
+	printInOrder(birthdateRoot);
 }
 
 //In the future, this will show every aspect of the contact on the GUI. This might actually just be another form of editContact.
@@ -126,15 +131,15 @@ std::string toLowercase(std::string x) { // takes a string, replaces it with low
  //// SEARCHING
 
 void Contacts::searchByFirstName(std::string userInput) {  // goes through firstName tree
-	treeNode* parse = firstNameRoot;
+	treeNode* parse = firstNameRoot; // FUNCTIONAL BUT we want search of "but" to come up with "Butler"
 	if (parse == nullptr) {
 		return;
 	}
 	while (parse != nullptr) {
-		if (parse->c->firstName < userInput) {
+		if (toLowercase(parse->c->firstName) < userInput) {
 			parse = parse->rightChild;
 		}
-		else if (parse->c->firstName > userInput) {
+		else if (toLowercase(parse->c->firstName) > userInput) {
 			parse = parse->leftChild;
 		}
 		else {
@@ -150,10 +155,10 @@ void Contacts::searchByLastName(std::string userInput) { // goes through lastNam
 		return;
 	}
 	while (parse != nullptr) {
-		if (parse->c->lastName < userInput) {
+		if (toLowercase(parse->c->lastName) < userInput) {
 			parse = parse->rightChild;
 		}
-		else if (parse->c->lastName > userInput) {
+		else if (toLowercase(parse->c->lastName) > userInput) {
 			parse = parse->leftChild;
 		}
 		else {
@@ -203,9 +208,11 @@ void Contacts::search() {
 	std::cin >> userInput; // doesn't support spaces yet
 	userInput = toLowercase(userInput);
 	clearSearchResults();
+
 	searchByFirstName(userInput);
 	searchByLastName(userInput);
 	searchByBirthdate(userInput);
+
 	if (searchResults.size() == 0) {
 		std::cout << "No contacts were found!" << std::endl;
 	}
@@ -223,24 +230,27 @@ void Contacts::search() {
 			displayDetailedContact(searchResults[stoi(x)]->c);
 			std::cout << "0) Main Menu, 1) Edit, 2) Delete :";
 			std::string y = "100";
-			while (stoi(x) > 2 || stoi(x) < 0) {
+			while (stoi(y) > 2 || stoi(y) < 0) {
 				std::cout << "Selection: ";
-				std::cin >> x;
-				if (stoi(x) > 2 || stoi(x) < 0) {
+				std::cin >> y;
+				if (stoi(y) > 2 || stoi(y) < 0) {
 					std::cout << "Not a valid selection! Choose between 0 and 2" << std::endl;
 				}
 			}
-			if (stoi(x) == 0) { // user chose to go back to main menu
+			if (stoi(y) == 0) { // user chose to go back to main menu
 				return;
 			}
-			if (stoi(x) == 1) { // user chose to edit the contact selected
+			if (stoi(y) == 1) { // user chose to edit the contact selected
 				editContact(searchResults[stoi(x)]->c);
 				return;
 			}
-			if (stoi(x) == 2) { // user chose to delete the contact
-				deleteTreeNode(searchResults[stoi(x)]->c->firstTreePointer);
+			if (stoi(y) == 2) { // user chose to delete the contact
 				deleteTreeNode(searchResults[stoi(x)]->c->lastTreePointer);
+				currentlySortedBy = &lastNameRoot;
 				deleteTreeNode(searchResults[stoi(x)]->c->birthTreePointer);
+				currentlySortedBy = &birthdateRoot;
+				deleteTreeNode(searchResults[stoi(x)]->c->firstTreePointer);
+				currentlySortedBy = &firstNameRoot;
 				return;
 			}
 		}
@@ -264,26 +274,20 @@ void Contacts::addToFirstTree(treeNode* given) {
 			parse = parse->leftChild;
 			isLeft = true;
 		}
-		else if (toLowercase(parse->c->firstName) < toLowercase(given->c->firstName)){ // comparing to a name greater than the new name
-			parse = parse->rightChild; 
+		else if (toLowercase(parse->c->firstName) < toLowercase(given->c->firstName)) { // comparing to a name greater than the new name
+			parse = parse->rightChild;
 			isLeft = false;
 		}
-		else if (toLowercase(parse->c->lastName) == toLowercase(given->c->lastName)) {
-			if(toLowercase(parse->c->lastName) > toLowercase(given->c->lastName)){
-				parse = parse->leftChild;
-				isLeft = true;
-			}
-			else { // if the new name is equal to OR greater than, it goes to the right child.
-				parse = parse->rightChild;
-				isLeft = false;
-			}
+		else { // if the new name is equal to OR greater than, it goes to the right child.
+			parse = parse->rightChild;
+			isLeft = false;
 		}
 	}
 	if (isLeft) {
-		given->parent->leftChild = parse; // K - reason for having parent
+		given->parent->leftChild = given; // K - reason for having parent
 	}
 	else {
-		given->parent->rightChild = parse;
+		given->parent->rightChild = given;
 	}
 } // done.
 
@@ -316,10 +320,10 @@ void Contacts::addToLastTree(treeNode* given) {
 		}
 	}
 	if (isLeft) {
-		given->parent->leftChild = parse; // K - reason for having parent
+		given->parent->leftChild = given; // K - reason for having parent
 	}
 	else {
-		given->parent->rightChild = parse;
+		given->parent->rightChild = given;
 	}
 } // done.
 
@@ -328,9 +332,10 @@ void Contacts::addToBirthTree(treeNode* given) {
 		birthdateRoot = given;
 		return;
 	}
-	treeNode* parse = firstNameRoot;
+	treeNode* parse = birthdateRoot;
 	bool isLeft = true;
 	while (parse != nullptr) {
+		given->parent = parse;
 		if (parse->c->birthdate > given->c->birthdate) {
 			parse = parse->leftChild;
 			isLeft = true;
@@ -341,10 +346,10 @@ void Contacts::addToBirthTree(treeNode* given) {
 		}
 	}
 	if (isLeft) {
-		given->parent->leftChild = parse; // K - reason for having parent
+		given->parent->leftChild = given; // K - reason for having parent
 	}
 	else {
-		given->parent->rightChild = parse;
+		given->parent->rightChild = given;
 	}
 }
 
@@ -380,6 +385,7 @@ void Contacts::createContact(){
 	firstNode->c = newContact;
 	lastNode->c = newContact;
 	birthNode->c = newContact;
+
 	newContact->firstTreePointer = firstNode;
 	newContact->lastTreePointer = lastNode;
 	newContact->birthTreePointer = birthNode;
@@ -387,10 +393,9 @@ void Contacts::createContact(){
 	addToFirstTree(firstNode);
 	addToLastTree(lastNode);
 	addToBirthTree(birthNode);
-
 	*currentlySortedBy = firstNameRoot;
-	std::cout << std::endl << "Added " << newContact->firstName << " to your contact list!" << std::endl; //I moved this up here so it works with root also.
-} //end of createContact function
+	std::cout << std::endl << "Added " << newContact->firstName << " to your contact list!" << std::endl;
+}
 
  //// //// ////
  //// EDITING
