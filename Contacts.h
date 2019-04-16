@@ -91,6 +91,12 @@ void printInOrder(treeNode* curr) { // prints all entries inOrder based on which
 	else {
 		std::cout << "- " << curr->c->phoneNumber << " ";
 	}
+	if (curr->c->birthdate == "") {
+		std::cout << "<emptyBirthdate> ";
+	}
+	else {
+		std::cout << "- " << curr->c->birthdate << " ";
+	}
 	std::cout << std::endl;
 	printInOrder(curr->rightChild);
 }
@@ -166,7 +172,7 @@ void Contacts::searchByLastName(std::string userInput) { // goes through lastNam
 			return;
 		}
 	}
-} 
+}
 
 void Contacts::searchByBirthdate(std::string userInput) { // goes through birthdate tree
 	treeNode* parse = birthdateRoot;
@@ -203,9 +209,18 @@ void Contacts::clearSearchResults() {
 }
 
 void Contacts::search() {
-	std::cout << "Type your search term: " << std::endl;
+	std::cout << "Type your search term. Please do not type full name: " << std::endl;
 	std::string userInput = "";
-	std::cin >> userInput; // doesn't support spaces yet
+	std::cin >> userInput;
+	//remove spaces
+	std::string noSpaces = "";
+	for(int i = 0; i < userInput.length(); i++)
+	{
+		if(userInput[i] != ' ')
+		{
+			noSpaces += userInput[i];
+		}
+	}
 	userInput = toLowercase(userInput);
 	clearSearchResults();
 
@@ -245,12 +260,19 @@ void Contacts::search() {
 				return;
 			}
 			if (stoi(y) == 2) { // user chose to delete the contact
-				deleteTreeNode(searchResults[stoi(x)]->c->lastTreePointer);
-				currentlySortedBy = &lastNameRoot;
-				deleteTreeNode(searchResults[stoi(x)]->c->birthTreePointer);
-				currentlySortedBy = &birthdateRoot;
-				deleteTreeNode(searchResults[stoi(x)]->c->firstTreePointer);
+				Contact* c = searchResults[stoi(x)]->c;
+
 				currentlySortedBy = &firstNameRoot;
+				deleteTreeNode(c->firstTreePointer);
+				currentlySortedBy = &lastNameRoot;
+				deleteTreeNode(c->lastTreePointer);
+				currentlySortedBy = &birthdateRoot;
+				deleteTreeNode(c->birthTreePointer);
+
+				delete c; //finally, delete the Contact*
+
+				currentlySortedBy = &firstNameRoot;
+
 				return;
 			}
 		}
@@ -278,9 +300,15 @@ void Contacts::addToFirstTree(treeNode* given) {
 			parse = parse->rightChild;
 			isLeft = false;
 		}
-		else { // if the new name is equal to OR greater than, it goes to the right child.
-			parse = parse->rightChild;
-			isLeft = false;
+		else { // if the new name is equal, decide to go left or right (right if last name is >= parse)
+			if (toLowercase(parse->c->lastName) > toLowercase(given->c->lastName)) { // comparing to a name less than the new name
+				parse = parse->leftChild;
+				isLeft = true;
+			}
+			else { //last name >= parse
+				parse = parse->rightChild;
+				isLeft = false;
+			}
 		}
 	}
 	if (isLeft) {
@@ -305,7 +333,7 @@ void Contacts::addToLastTree(treeNode* given) {
 			isLeft = true;
 		}
 		else if (toLowercase(parse->c->lastName) < toLowercase(given->c->lastName)){ // comparing to a name greater than the new name
-			parse = parse->rightChild; 
+			parse = parse->rightChild;
 			isLeft = false;
 		}
 		else if (toLowercase(parse->c->lastName) == toLowercase(given->c->lastName)) {
@@ -313,9 +341,15 @@ void Contacts::addToLastTree(treeNode* given) {
 				parse = parse->leftChild;
 				isLeft = true;
 			}
-			else { // if the new name is equal to OR greater than, it goes to the right child.
-				parse = parse->rightChild;
-				isLeft = false;
+			else { // if the new name is equal, check first name. First name >= goes right.
+				if (toLowercase(parse->c->firstName) > toLowercase(given->c->firstName)) { // comparing to a name less than the new name
+					parse = parse->leftChild;
+					isLeft = true;
+				}
+				else { // comparing to a name greater than the new name
+					parse = parse->rightChild;
+					isLeft = false;
+				}
 			}
 		}
 	}
@@ -327,7 +361,7 @@ void Contacts::addToLastTree(treeNode* given) {
 	}
 } // done.
 
-void Contacts::addToBirthTree(treeNode* given) { 
+void Contacts::addToBirthTree(treeNode* given) {
 	if (birthdateRoot == nullptr) {
 		birthdateRoot = given;
 		return;
@@ -393,7 +427,7 @@ void Contacts::createContact(){
 	addToFirstTree(firstNode);
 	addToLastTree(lastNode);
 	addToBirthTree(birthNode);
-	*currentlySortedBy = firstNameRoot;
+	currentlySortedBy = &firstNameRoot; //point to the firstNameRoot pointer
 	std::cout << std::endl << "Added " << newContact->firstName << " to your contact list!" << std::endl;
 }
 
