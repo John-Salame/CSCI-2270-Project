@@ -357,8 +357,97 @@ void Contacts::editContact(Contact* editThis) {
 
 }
 
- //// //// ////
- //// DELETING
-void Contacts::deleteContact() {
+//helper function for deleteContact(); del is the treeNode to delete. this will only be called if del exists.
+treeNode* findReplacement(treeNode* del)
+{
+	treeNode* traverse = del;
 
+	if(del->rightChild == 0 && del->leftChild == 0)
+	{
+		return 0;
+	}
+	else if(del->rightChild != 0) //del has a rightChild
+	{
+		traverse = traverse->rightChild; //start in right branch and find the leftmost leaf during the while loop
+	}
+	else //no right child; replace del with its leftChild
+	{
+		return del->leftChild;
+	}
+
+	while(traverse->leftChild != 0)
+	{
+		traverse = traverse->leftChild;
+	}
+
+	return traverse;
+}
+
+void Contacts::deleteTreeNode(treeNode* del) {
+	//edge case: tree is empty or del does not exist
+	if(del == 0)
+	{
+		std::cout << "Nothing to delete." << std::endl;
+		return;
+	}
+
+	treeNode* rep = findReplacement(del); //leftmost leaf of the right child of del (or the left branch if rightChild is null), or null if del has no children
+
+	if(del->parent == 0) //root is being deleted
+	{
+		root = rep;
+	}
+
+	if(rep != 0)
+	{
+		//make the parent of rep stop pointing to it.
+		if(rep != del->leftChild && rep == rep->parent->leftChild) //rep is a left child. This is necessary if rep is in the middle of the right branch
+		{
+			rep->parent->leftChild = rep->rightChild;
+		}
+		else if(rep == rep->parent->rightChild) //rep is a right child (this should only happen if rep is the child of what we are deleting)
+		{
+			del->rightChild = rep->rightChild;
+		}
+
+
+		//put the replacement contact where the soon-to-be-deleted contact was.
+		rep->parent = del->parent;
+		if(rep != del->leftChild)
+		{
+			rep->leftChild = del->leftChild;
+			rep->rightChild = del->rightChild;
+		}
+	}
+
+	//make the parent of del point to rep (or null if rep doesn't exist)
+	if(del->parent != 0)
+	{
+		if(del == del->parent->leftChild) //del is a left child
+		{
+			del->parent->leftChild = rep;
+		}
+		else //del is a right child
+		{
+			del->parent->rightChild = rep;
+		}
+	}
+
+	//delete del whether or not there is a replacement. Make del stop pointing to things in case anything in another part of the program is still pointing to del.
+	del->parent = 0;
+	del->leftChild = 0;
+	del->rightChild = 0;
+	delete del;
+	del = 0;
+}
+
+//In the future, this will show every aspect of the contact on the GUI. This might actually just be another form of editContact.
+void Contacts::displayContact(Contact* c)
+{
+	std::cout << "Showing information for Contact:" << std::endl;
+	std::cout << "    First Name: "<< c->firstName << std::endl;
+	std::cout << "    Last Name: " << c->lastName << std::endl;
+	std::cout << "    Phone Number: " << c->phoneNumber << std::endl;
+	std::cout << "    Birthday: " << c->birthdate << std::endl;
+	std::cout << "    Address: " << c->address << std::endl;
 }
