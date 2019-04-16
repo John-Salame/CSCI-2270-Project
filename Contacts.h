@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 
+struct treeNode;
+
 struct Contact { // actual contact
 
 	std::string firstName = ""; // EX: Kyran
@@ -10,6 +12,10 @@ struct Contact { // actual contact
 	std::string birthdate = ""; // EX: 04-06-2001
 	std::string address = ""; // EX: 50181 South Street, Denver, Colorado
 	std::string email = ""; // EX: kyran@butlerhq.com
+
+	treeNode* firstTreePointer = nullptr;
+	treeNode* lastTreePointer = nullptr;
+	treeNode* birthTreePointer = nullptr;
 
 };
 
@@ -28,7 +34,6 @@ public:
 	void printAllContacts(); //this works for any tree
 	void createContact(); //create a contact from user input and return the pointer. Can be called as Contacts::createContact() instead of dot notation.
 	void editContact(Contact* editThis); //I think this should be in the GUI file with displayContact(). (There is no GUI file yet)
-	void deleteContact(); //this can work for any tree because the algorithm is to replace the deleted node with the leftmost node from the right branch
 	void deleteTreeNode(treeNode* del);
 
 	void search();
@@ -205,11 +210,41 @@ void Contacts::search() {
 		std::cout << "No contacts were found!" << std::endl;
 	}
 	else {
+		std::string x = "100";
 		for (int i = 0; i < searchResults.size(); i++) {
-			std::cout << i << ") " << searchResults[i]->c->firstName << " " << searchResults[i]->c->lastName << std::endl;;
+			std::cout << i << ") " << searchResults[i]->c->firstName << " " << searchResults[i]->c->lastName << std::endl;
+			while (stoi(x) > searchResults.size() || stoi(x) < 0) {
+				std::cout << "Selection: ";
+				std::cin >> x;
+				if (stoi(x) > searchResults.size() || stoi(x) < 0) {
+					std::cout << "Not a valid selection! Choose between 0 and " << searchResults.size() << std::endl;
+				}
+			}
+			displayDetailedContact(searchResults[stoi(x)]->c);
+			std::cout << "0) Main Menu, 1) Edit, 2) Delete :";
+			std::string y = "100";
+			while (stoi(x) > 2 || stoi(x) < 0) {
+				std::cout << "Selection: ";
+				std::cin >> x;
+				if (stoi(x) > 2 || stoi(x) < 0) {
+					std::cout << "Not a valid selection! Choose between 0 and 2" << std::endl;
+				}
+			}
+			if (stoi(x) == 0) { // user chose to go back to main menu
+				return;
+			}
+			if (stoi(x) == 1) { // user chose to edit the contact selected
+				editContact(searchResults[stoi(x)]->c);
+				return;
+			}
+			if (stoi(x) == 2) { // user chose to delete the contact
+				deleteTreeNode(searchResults[stoi(x)]->c->firstTreePointer);
+				deleteTreeNode(searchResults[stoi(x)]->c->lastTreePointer);
+				deleteTreeNode(searchResults[stoi(x)]->c->birthTreePointer);
+				return;
+			}
 		}
 		// working on next, they select one to do. it calls displayDetailedContact. Then the user can edit / delete it.
-
 	}
 }
 
@@ -344,6 +379,9 @@ void Contacts::createContact(){
 	firstNode->c = newContact;
 	lastNode->c = newContact;
 	birthNode->c = newContact;
+	newContact->firstTreePointer = firstNode;
+	newContact->lastTreePointer = lastNode;
+	newContact->birthTreePointer = birthNode;
 
 	addToFirstTree(firstNode);
 	addToLastTree(lastNode);
