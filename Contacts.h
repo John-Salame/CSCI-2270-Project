@@ -37,9 +37,9 @@ public:
 	void deleteTreeNode(treeNode* del);
 
 	void search();
-	void searchByFirstName(std::string userInput);
-	void searchByLastName(std::string userInput);
-	void searchByBirthdate(std::string userInput);
+	void searchByFirstName(std::string userInput, treeNode* parse);
+	void searchByLastName(std::string userInput, treeNode* parse);
+	void searchByBirthdate(std::string userInput, treeNode* parse);
 	void addToSearchResults(treeNode* pointer);
 	void clearSearchResults();
 
@@ -136,66 +136,100 @@ std::string toLowercase(std::string x) { // takes a string, replaces it with low
  //// //// /////
  //// SEARCHING
 
-void Contacts::searchByFirstName(std::string userInput) {  // goes through firstName tree
-	treeNode* parse = firstNameRoot; // FUNCTIONAL BUT we want search of "but" to come up with "Butler"
-	if (parse == nullptr) {
-		return;
-	}
-	while (parse != nullptr) {
-		if (toLowercase(parse->c->firstName) < userInput) {
-			parse = parse->rightChild;
-		}
-		else if (toLowercase(parse->c->firstName) > userInput) {
-			parse = parse->leftChild;
-		}
-		else {
-			addToSearchResults(parse);
-			return;
-		}
-	}
-}
 
-void Contacts::searchByLastName(std::string userInput) { // goes through lastName tree
-	treeNode* parse = lastNameRoot;
-	if (parse == nullptr) {
-		return;
-	}
-	while (parse != nullptr) {
-		if (toLowercase(parse->c->lastName) < userInput) {
-			parse = parse->rightChild;
-		}
-		else if (toLowercase(parse->c->lastName) > userInput) {
-			parse = parse->leftChild;
-		}
-		else {
-			addToSearchResults(parse);
-			return;
-		}
-	}
-}
+//nodeSub and userInput are both lowercase
+void Contacts::searchByFirstName(std::string userInput, treeNode* parse) {  // goes through firstName tree
 
-void Contacts::searchByBirthdate(std::string userInput) { // goes through birthdate tree
-	treeNode* parse = birthdateRoot;
-	if (parse == nullptr) {
+	if (parse == 0) {
 		return;
 	}
-	while (parse != nullptr) {
-		if (parse->c->birthdate < userInput) {
-			parse = parse->rightChild;
-		}
-		else if (parse->c->birthdate > userInput) {
-			parse = parse->leftChild;
-		}
-		else {
-			addToSearchResults(parse);
-			return;
-		}
+
+	int len = userInput.length();
+
+	std::string nodeSub = toLowercase(parse->c->firstName.substr(0, len));
+
+	//only go left if the current node's first name is not < search term
+	if(parse->leftChild != 0 && nodeSub >= userInput)
+	{
+		searchByFirstName(userInput, parse->leftChild);
 	}
-}
+
+	//in-order: instead of printing, add to vector
+	if(nodeSub == userInput)
+	{
+		searchResults.push_back(parse);
+	}
+
+	//only go right if the current node's first name is not > search term
+	if(parse->rightChild != 0 && nodeSub <= userInput)
+	{
+		searchByFirstName(userInput, parse->rightChild);
+	}
+} //end of searchByFirstName
+
+void Contacts::searchByLastName(std::string userInput, treeNode* parse) { // goes through lastName tree
+
+	if (parse == 0) {
+		return;
+	}
+
+	int len = userInput.length();
+
+	std::string nodeSub = toLowercase(parse->c->lastName.substr(0, len));
+
+	//only go left if the current node's first name is not < search term
+	if(parse->leftChild != 0 && nodeSub >= userInput)
+	{
+		searchByLastName(userInput, parse->leftChild);
+	}
+
+	//in-order: instead of printing, add to vector
+	if(nodeSub == userInput)
+	{
+		searchResults.push_back(parse);
+	}
+
+	//only go right if the current node's first name is not > search term
+	if(parse->rightChild != 0 && nodeSub <= userInput)
+	{
+		searchByLastName(userInput, parse->rightChild);
+	}
+
+} //end of searchByLastName
+
+void Contacts::searchByBirthdate(std::string userInput, treeNode* parse) { // goes through birthdate tree
+
+	if (parse == 0) {
+		return;
+	}
+
+	int len = userInput.length();
+
+	std::string nodeSub = toLowercase(parse->c->birthdate.substr(0, len));
+
+	//only go left if the current node's first name is not < search term
+	if(parse->leftChild != 0 && nodeSub >= userInput)
+	{
+		searchByBirthdate(userInput, parse->leftChild);
+	}
+
+	//in-order: instead of printing, add to vector
+	if(nodeSub == userInput)
+	{
+		searchResults.push_back(parse);
+	}
+
+	//only go right if the current node's first name is not > search term
+	if(parse->rightChild != 0 && nodeSub <= userInput)
+	{
+		searchByBirthdate(userInput, parse->rightChild);
+	}
+
+} //end of searchByBirthdate
 
 void Contacts::addToSearchResults(treeNode* pointer) {
 	for (int i = 0; i < searchResults.size(); i++) {
-		if (searchResults[i] == pointer) {
+		if (searchResults[i]->c == pointer->c) {
 			return;
 		}
 	}
@@ -203,7 +237,7 @@ void Contacts::addToSearchResults(treeNode* pointer) {
 }
 
 void Contacts::clearSearchResults() {
-	for (int i = 0; i < searchResults.size(); i++) {
+	while (searchResults.size() > 0) {
 		searchResults.pop_back();
 	}
 }
@@ -224,9 +258,9 @@ void Contacts::search() {
 	userInput = toLowercase(userInput);
 	clearSearchResults();
 
-	searchByFirstName(userInput);
-	searchByLastName(userInput);
-	searchByBirthdate(userInput);
+	searchByFirstName(userInput, firstNameRoot);
+	searchByLastName(userInput, lastNameRoot);
+	searchByBirthdate(userInput, birthdateRoot);
 
 	if (searchResults.size() == 0) {
 		std::cout << "No contacts were found!" << std::endl;
@@ -235,12 +269,13 @@ void Contacts::search() {
 		std::string x = "100";
 		for (int i = 0; i < searchResults.size(); i++) {
 			std::cout << i << ") " << searchResults[i]->c->firstName << " " << searchResults[i]->c->lastName << std::endl;
-			while (stoi(x) > searchResults.size() || stoi(x) < 0) {
-				std::cout << "Selection: ";
-				std::cin >> x;
-				if (stoi(x) > searchResults.size() || stoi(x) < 0) {
-					std::cout << "Not a valid selection! Choose between 0 and " << searchResults.size() << std::endl;
-				}
+		}
+		//input an option to go to main menu, edit, or delete
+		while (stoi(x) > searchResults.size() || stoi(x) < 0) {
+			std::cout << "Selection: ";
+			std::cin >> x;
+			if (stoi(x) > searchResults.size() || stoi(x) < 0) {
+				std::cout << "Not a valid selection! Choose between 0 and " << searchResults.size() << std::endl;
 			}
 			displayDetailedContact(searchResults[stoi(x)]->c);
 			std::cout << "0) Main Menu, 1) Edit, 2) Delete :";
