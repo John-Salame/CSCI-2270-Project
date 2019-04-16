@@ -29,6 +29,7 @@ public:
 	void createContact(); //create a contact from user input and return the pointer. Can be called as Contacts::createContact() instead of dot notation.
 	void editContact(Contact* editThis); //I think this should be in the GUI file with displayContact(). (There is no GUI file yet)
 	void deleteContact(); //this can work for any tree because the algorithm is to replace the deleted node with the leftmost node from the right branch
+	void deleteTreeNode(treeNode* del);
 
 	void search();
 	void searchByFirstName(std::string userInput);
@@ -395,7 +396,7 @@ void Contacts::deleteTreeNode(treeNode* del) {
 
 	if(del->parent == 0) //root is being deleted
 	{
-		root = rep;
+		currentlySortedBy = rep;
 	}
 
 	if(rep != 0)
@@ -439,15 +440,4 @@ void Contacts::deleteTreeNode(treeNode* del) {
 	del->rightChild = 0;
 	delete del;
 	del = 0;
-}
-
-//In the future, this will show every aspect of the contact on the GUI. This might actually just be another form of editContact.
-void Contacts::displayContact(Contact* c)
-{
-	std::cout << "Showing information for Contact:" << std::endl;
-	std::cout << "    First Name: "<< c->firstName << std::endl;
-	std::cout << "    Last Name: " << c->lastName << std::endl;
-	std::cout << "    Phone Number: " << c->phoneNumber << std::endl;
-	std::cout << "    Birthday: " << c->birthdate << std::endl;
-	std::cout << "    Address: " << c->address << std::endl;
 }
