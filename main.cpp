@@ -38,11 +38,10 @@ int main(){
 		else {
 			switch (stoi(mainMenuChoice)) { // will break if mainMenuChoice is a non-number.
 			case 1: // User selected to print all of the contacts in their book.
-				iCloud.printAllContacts();
+				iCloud.printAllContacts(); // need option to change sorting
 				break;
 			case 2: // User selected to search for an existing contact
-				iCloud.searchByFirstName(); // K - User searches, finds, then can edit or delete is what I'm thinking
-				//iCLoud.searchByLastName(); //uncomment this after we implement it.
+				iCloud.search(); // K - User searches, finds, then can edit or delete is what I'm thinking
 				break;
 			case 3: // User selected to add a new contact
 				newNode = Contacts::createContact();
