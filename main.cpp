@@ -29,7 +29,7 @@ int main(){
 	//Add in loading functionality from a file.
 
 	std::string mainMenuChoice = "";
-	while (mainMenuChoice != "5") {
+	while (mainMenuChoice != "4") {
 		m();
 		std::cin >> mainMenuChoice;
 		if (mainMenuChoice < "1" || mainMenuChoice > "4") {
@@ -48,10 +48,6 @@ int main(){
 				break;
 			case 4: // User selected to close the book. Should put saving into here.
 				std::cout << "*closes book*" << std::endl;
-				break;
-			case 5:
-				std::cout << "secret hacker menu, I've just added a few contacts :)" << std::endl;
-				
 				break;
 			}
 		}

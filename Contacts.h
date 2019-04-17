@@ -1,4 +1,3 @@
-#pragma once
 #include <iostream>
 #include <string>
 #include <vector>
@@ -34,6 +33,7 @@ public:
 	Contacts();
 	void printAllContacts(); //this works for any tree
 	void createContact(); //create a contact from user input and return the pointer. Can be called as Contacts::createContact() instead of dot notation.
+	void createContact(std::string firstName, std::string lastName, std::string phoneNumber, std::string birthdate, std::string address, std::string email);
 	void editContact(Contact* editThis); //I think this should be in the GUI file with displayContact(). (There is no GUI file yet)
 	void deleteTreeNode(treeNode* del);
 
@@ -50,9 +50,19 @@ public:
 	void addToLastTree(treeNode* c);
 	void addToBirthTree(treeNode* c);
 
+	//accessor methods
+	treeNode* treeHead(); //return the pointer that currentlySortedBy points to
+	void changeToFirstNames(); //make treeHead point to firstNamesRoot (in Contacts, not in main)
+	void changeToLastNames();
+	void changeToPhoneNumbers();
+	void changeToBirthdates();
+	void changeToAddresses();
+	void changeToEmails();
+	std::vector<treeNode*> getSearchResults(); //return searchResults, vector won't change when a contact is deleted
+
 private:
 	// the 'print all' tree is currently sorted by:
-	treeNode* *currentlySortedBy;
+	treeNode** currentlySortedBy;
 	treeNode* firstNameRoot; // root of the tree sorted by first names
 	treeNode* lastNameRoot; // root of the tree sorted by last names
 	treeNode* birthdateRoot; // root of the tree sorted by birthday -> can make more of these easily
