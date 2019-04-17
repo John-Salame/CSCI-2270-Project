@@ -12,10 +12,8 @@ g++ -std=c++11 main.cpp -o runner
 #include <afxwin.h>
 #include "mainFrame.h"
 #include "resource.h"
-#include "Contacts.h"
 
 CMyApp happyApp;
-Contacts iCloud;
 
 BEGIN_MESSAGE_MAP(CMyFrame, CFrameWnd)
 	ON_WM_LBUTTONDOWN()
