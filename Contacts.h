@@ -91,6 +91,12 @@ void printInOrder(treeNode* curr) { // prints all entries inOrder based on which
 	else {
 		std::cout << "- " << curr->c->phoneNumber << " ";
 	}
+	if (curr->c->birthdate == "") {
+		std::cout << "<emptyBirthdate> ";
+	}
+	else {
+		std::cout << "- " << curr->c->birthdate << " ";
+	}
 	std::cout << std::endl;
 	printInOrder(curr->rightChild);
 }
