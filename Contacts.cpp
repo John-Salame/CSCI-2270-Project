@@ -1,5 +1,5 @@
-//// //// /////
-//// CONSTRUCTOR
+#include "Contacts.hpp"
+
 Contacts::Contacts() {
  *currentlySortedBy = nullptr; // initializes root as nullptr
  firstNameRoot = nullptr;
