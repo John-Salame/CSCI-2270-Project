@@ -1,7 +1,6 @@
 #include "Contacts.h"
 
 Contacts::Contacts() {
-	*currentlySortedBy = nullptr; // initializes root as nullptr
 	firstNameRoot = nullptr;
 	lastNameRoot = nullptr;
 	birthdateRoot = nullptr;

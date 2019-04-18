@@ -1,4 +1,5 @@
 #pragma once
+#include "Contacts.h"
 class CMyApp : public CWinApp {
 public:
 	virtual BOOL InitInstance();
@@ -14,4 +15,6 @@ protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	DECLARE_MESSAGE_MAP();
+private:
+	Contacts happyContacts;
 };

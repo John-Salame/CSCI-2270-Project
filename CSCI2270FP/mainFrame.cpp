@@ -2,6 +2,7 @@
 #include <cstring>
 #include <string>
 #include "mainFrame.h"
+#include "Contacts.h"
 
 CMyFrame::CMyFrame() {
 	Create(NULL, TEXT("My APP FRAME")); //Creates a new window
@@ -28,8 +29,13 @@ int CMyFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 }
 
 void CMyFrame::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
-	std::string stringer;
+	std::string apricot;
 	switch (nChar) {
+	case VK_ESCAPE:
+		happyContacts.createContact("Jeff", "Kaplan", "123-456-7890", "4/20/1889", "Austria", "aussie@bundestadt.org");
+		apricot = happyContacts.treeHead()->c->firstName;
+		MessageBox(apricot.c_str());
+		break;
 	case VK_RETURN:
 		MessageBox("Testing");
 		break;
