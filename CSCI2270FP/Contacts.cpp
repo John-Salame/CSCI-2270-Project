@@ -4,6 +4,7 @@ Contacts::Contacts() {
 	firstNameRoot = nullptr;
 	lastNameRoot = nullptr;
 	birthdateRoot = nullptr;
+	currentlySortedBy = &firstNameRoot; //point to the firstNameRoot pointer so we sort by first names when we start the program
 }
 
 //// //// /////
@@ -236,9 +237,6 @@ void Contacts::search() {
 				deleteTreeNode(c->birthTreePointer);
 
 				delete c; //finally, delete the Contact*
-
-				currentlySortedBy = &firstNameRoot;
-
 				return;
 			}
 		}
@@ -299,6 +297,7 @@ void Contacts::addToFirstTree(treeNode* given) {
 	else {
 		given->parent->rightChild = given;
 	}
+	given->c->firstTreePointer = given; //when you add a contact to a tree, report the treeNode in firstTreePointer of Contact
 } // done.
 
 void Contacts::addToLastTree(treeNode* given) {
@@ -341,6 +340,7 @@ void Contacts::addToLastTree(treeNode* given) {
 	else {
 		given->parent->rightChild = given;
 	}
+	given->c->lastTreePointer = given; //when you add a contact to a tree, report the treeNode in firstTreePointer of Contact
 } // done.
 
 void Contacts::addToBirthTree(treeNode* given) {
@@ -367,8 +367,11 @@ void Contacts::addToBirthTree(treeNode* given) {
 	else {
 		given->parent->rightChild = given;
 	}
+	given->c->birthTreePointer = given; //when you add a contact to a tree, report the treeNode in firstTreePointer of Contact
 }
 
+//// //// /////
+//// ADD TO ALL TREES
 void Contacts::createContact() {
 	Contact* newContact = new Contact;
 
@@ -402,14 +405,9 @@ void Contacts::createContact() {
 	lastNode->c = newContact;
 	birthNode->c = newContact;
 
-	newContact->firstTreePointer = firstNode;
-	newContact->lastTreePointer = lastNode;
-	newContact->birthTreePointer = birthNode;
-
 	addToFirstTree(firstNode);
 	addToLastTree(lastNode);
 	addToBirthTree(birthNode);
-	currentlySortedBy = &firstNameRoot; //point to the firstNameRoot pointer
 	std::cout << std::endl << "Added " << newContact->firstName << " to your contact list!" << std::endl;
 }
 
@@ -433,14 +431,9 @@ void Contacts::createContact(std::string firstName, std::string lastName, std::s
 	lastNode->c = newContact;
 	birthNode->c = newContact;
 
-	newContact->firstTreePointer = firstNode;
-	newContact->lastTreePointer = lastNode;
-	newContact->birthTreePointer = birthNode;
-
 	addToFirstTree(firstNode);
 	addToLastTree(lastNode);
 	addToBirthTree(birthNode);
-	currentlySortedBy = &firstNameRoot; //point to the firstNameRoot pointer
 	std::cout << std::endl << "Added " << newContact->firstName << " to your contact list!" << std::endl;
 }
 
