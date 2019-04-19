@@ -17,7 +17,6 @@ struct Contact { // actual contact
 	treeNode* firstTreePointer = nullptr;
 	treeNode* lastTreePointer = nullptr;
 	treeNode* birthTreePointer = nullptr;
-
 };
 
 struct treeNode { // used to build tree of contacts, built as if the tree is organized by first name alphabatized right now
@@ -39,6 +38,7 @@ public:
 	void deleteTreeNode(treeNode* del);
 
 	void search();
+	void search(std::string input); //overloaded for In Ji
 	void searchByFirstName(std::string userInput, treeNode* parse);
 	void searchByLastName(std::string userInput, treeNode* parse);
 	void searchByBirthdate(std::string userInput, treeNode* parse);
