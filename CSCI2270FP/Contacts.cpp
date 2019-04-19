@@ -236,14 +236,14 @@ void Contacts::search() {
 	}
 }
 
-/* PRECONDITION: userInput is a name (or part of a name) or birthday, but not a full name or anything with a space 
- * PURPOSE: Add matches to the searchResults member variable of Contacts.
- */
+/* PRECONDITION: userInput is a name (or part of a name) or birthday, but not a full name or anything with a space
+* PURPOSE: Add matches to the searchResults member variable of Contacts.
+*/
 void Contacts::search(std::string userInput) {
 	userInput = toLowercase(userInput);
 	clearSearchResults(); //clear search results before adding anything
-	
-	//these 3 functions add matches to searchResults member variable
+
+						  //these 3 functions add matches to searchResults member variable
 	searchByFirstName(userInput, firstNameRoot);
 	searchByLastName(userInput, lastNameRoot);
 	searchByBirthdate(userInput, birthdateRoot);
@@ -443,9 +443,9 @@ void Contacts::postEdit(Contact* c)
 	treeNode* lastNode = new treeNode;
 	treeNode* birthNode = new treeNode;
 
-	firstNode->c = newContact;
-	lastNode->c = newContact;
-	birthNode->c = newContact;
+	firstNode->c = c;
+	lastNode->c = c;
+	birthNode->c = c;
 
 	addToFirstTree(firstNode);
 	addToLastTree(lastNode);
@@ -541,18 +541,18 @@ void Contacts::deleteTreeNode(treeNode* del) {
 //delete all the treeNodes with Contact c, then delete the contact from the heap if deleteContact is true
 void Contacts::deleteFromAllTrees(Contact* c, bool deleteContact)
 {
-	treeNode** prevouslySortedBy = currentlySortedBy;
-	
+	treeNode** previouslySortedBy = currentlySortedBy;
+
 	currentlySortedBy = &firstNameRoot;
 	deleteTreeNode(c->firstTreePointer);
 	currentlySortedBy = &lastNameRoot;
 	deleteTreeNode(c->lastTreePointer);
 	currentlySortedBy = &birthdateRoot;
 	deleteTreeNode(c->birthTreePointer);
-	
+
 	currentlySortedBy = previouslySortedBy; //make currentlySortedBy point to what it was before deleteFromAllTrees was called
-	
-	if(deleteContact)
+
+	if (deleteContact)
 	{
 		delete c;
 	}
