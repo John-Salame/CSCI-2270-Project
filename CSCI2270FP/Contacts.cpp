@@ -393,11 +393,11 @@ void Contacts::createContact() {
 	firstNode->c = newContact;
 	lastNode->c = newContact;
 	birthNode->c = newContact;
-
-  //these 3 lines keep track of the Contact's treeNode in each tree.
-  newContact->firstTreePointer = firstNode;
-  newContact->lastTreePointer = lastNode;
-  newContact->birthTreePointer = birthNode;
+	
+	//these 3 lines keep track of the Contact's treeNode in each tree.
+	newContact->firstTreePointer = firstNode;
+	newContact->lastTreePointer = lastNode;
+	newContact->birthTreePointer = birthNode;
 
 	addToFirstTree(firstNode);
 	addToLastTree(lastNode);
@@ -425,10 +425,10 @@ void Contacts::createContact(std::string firstName, std::string lastName, std::s
 	lastNode->c = newContact;
 	birthNode->c = newContact;
 
-  //these 3 lines keep track of the Contact's treeNode in each tree.
-  newContact->firstTreePointer = firstNode;
-  newContact->lastTreePointer = lastNode;
-  newContact->birthTreePointer = birthNode;
+	//these 3 lines keep track of the Contact's treeNode in each tree.
+	newContact->firstTreePointer = firstNode;
+	newContact->lastTreePointer = lastNode;
+	newContact->birthTreePointer = birthNode;
 
 	addToFirstTree(firstNode);
 	addToLastTree(lastNode);
@@ -453,11 +453,16 @@ void Contacts::postEdit(Contact* c)
 	firstNode->c = c;
 	lastNode->c = c;
 	birthNode->c = c;
+	
+	//these 3 lines keep track of the Contact's treeNode in each tree.
+	c->firstTreePointer = firstNode;
+	c->lastTreePointer = lastNode;
+	c->birthTreePointer = birthNode;
 
 	addToFirstTree(firstNode);
 	addToLastTree(lastNode);
 	addToBirthTree(birthNode);
-}
+} //end of postEdit function
 
 
 //helper function for deleteContact(); del is the treeNode to delete. this will only be called if del exists.
