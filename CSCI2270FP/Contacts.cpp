@@ -289,7 +289,6 @@ void Contacts::addToFirstTree(treeNode* given) {
 	else {
 		given->parent->rightChild = given;
 	}
-	given->c->firstTreePointer = given; //when you add a contact to a tree, report the treeNode in firstTreePointer of Contact
 } // done.
 
 void Contacts::addToLastTree(treeNode* given) {
@@ -332,7 +331,6 @@ void Contacts::addToLastTree(treeNode* given) {
 	else {
 		given->parent->rightChild = given;
 	}
-	given->c->lastTreePointer = given; //when you add a contact to a tree, report the treeNode in firstTreePointer of Contact
 } // done.
 
 void Contacts::addToBirthTree(treeNode* given) {
@@ -359,7 +357,6 @@ void Contacts::addToBirthTree(treeNode* given) {
 	else {
 		given->parent->rightChild = given;
 	}
-	given->c->birthTreePointer = given; //when you add a contact to a tree, report the treeNode in firstTreePointer of Contact
 }
 
 //// //// /////
@@ -397,6 +394,11 @@ void Contacts::createContact() {
 	lastNode->c = newContact;
 	birthNode->c = newContact;
 
+  //these 3 lines keep track of the Contact's treeNode in each tree.
+  newContact->firstTreePointer = firstNode;
+  newContact->lastTreePointer = lastNode;
+  newContact->birthTreePointer = birthNode;
+
 	addToFirstTree(firstNode);
 	addToLastTree(lastNode);
 	addToBirthTree(birthNode);
@@ -422,6 +424,11 @@ void Contacts::createContact(std::string firstName, std::string lastName, std::s
 	firstNode->c = newContact;
 	lastNode->c = newContact;
 	birthNode->c = newContact;
+
+  //these 3 lines keep track of the Contact's treeNode in each tree.
+  newContact->firstTreePointer = firstNode;
+  newContact->lastTreePointer = lastNode;
+  newContact->birthTreePointer = birthNode;
 
 	addToFirstTree(firstNode);
 	addToLastTree(lastNode);
@@ -464,7 +471,7 @@ treeNode* findReplacement(treeNode* del)
 	}
 	else if (del->rightChild != 0) //del has a rightChild
 	{
-		traverse = traverse->rightChild; //start in right branch and find the leftmost leaf during the while loop
+		traverse = del->rightChild; //start in right branch and find the leftmost leaf during the while loop
 	}
 	else //no right child; replace del with its leftChild
 	{
@@ -477,7 +484,8 @@ treeNode* findReplacement(treeNode* del)
 	}
 
 	return traverse;
-}
+} //end of findReplacement
+
 
 void Contacts::deleteTreeNode(treeNode* del) {
 	//edge case: tree is empty or del does not exist
@@ -491,7 +499,7 @@ void Contacts::deleteTreeNode(treeNode* del) {
 
 	if (del->parent == 0) //root is being deleted
 	{
-		*currentlySortedBy = rep;
+		*currentlySortedBy = rep; //change firstNameRoot / lastNameRoot / birthdateRoot to match rep (the new root)
 	}
 
 	if (rep != 0)
@@ -501,9 +509,9 @@ void Contacts::deleteTreeNode(treeNode* del) {
 		{
 			rep->parent->leftChild = rep->rightChild;
 		}
-		else if (rep == rep->parent->rightChild) //rep is a right child (this should only happen if rep is the child of what we are deleting)
+		else if (rep == del->rightChild) //rep is a right child (this should only happen if rep is the child of what we are deleting)
 		{
-			del->rightChild = rep->rightChild;
+			del->rightChild = rep->rightChild; //this should work since rep has no left child
 		}
 
 
@@ -514,9 +522,20 @@ void Contacts::deleteTreeNode(treeNode* del) {
 			rep->leftChild = del->leftChild;
 			rep->rightChild = del->rightChild;
 		}
-	}
 
-	//make the parent of del point to rep (or null if rep doesn't exist)
+    //finally, make the new children of rep point to it as a parent
+    if(rep->leftChild != 0)
+    {
+      rep->leftChild->parent = rep;
+    }
+    if(rep->rightChild != 0)
+    {
+      rep->rightChild->parent = rep;
+    }
+	} //end of code for if replacement exists
+
+
+	//make the parent of del point to rep
 	if (del->parent != 0)
 	{
 		if (del == del->parent->leftChild) //del is a left child
@@ -535,7 +554,7 @@ void Contacts::deleteTreeNode(treeNode* del) {
 	del->rightChild = 0;
 	delete del;
 	del = 0;
-}
+} //end of deleteTreeNode
 
 
 //delete all the treeNodes with Contact c, then delete the contact from the heap if deleteContact is true
