@@ -183,18 +183,9 @@ void Contacts::clearSearchResults() {
 }
 
 void Contacts::search() {
-	std::cout << "Type your search term. Please do not type full name: " << std::endl;
+	std::cout << "Type your search term. Search by first name, last name, or phone number, but not full name." << std::endl;
 	std::string userInput = "";
 	std::cin >> userInput;
-	//remove spaces
-	std::string noSpaces = "";
-	for (int i = 0; i < userInput.length(); i++)
-	{
-		if (userInput[i] != ' ')
-		{
-			noSpaces += userInput[i];
-		}
-	}
 	userInput = toLowercase(userInput);
 	clearSearchResults();
 
@@ -255,6 +246,22 @@ void Contacts::search() {
 	}
 }
 
+/* PRECONDITION: userInput is a name (or part of a name) or birthday, but not a full name or anything with a space 
+ * PURPOSE: Add matches to the searchResults member variable of Contacts.
+ */
+void Contacts::search(std::string userInput) {
+	userInput = toLowercase(userInput);
+	clearSearchResults(); //clear search results before adding anything
+	
+	//these 3 functions add matches to searchResults member variable
+	searchByFirstName(userInput, firstNameRoot);
+	searchByLastName(userInput, lastNameRoot);
+	searchByBirthdate(userInput, birthdateRoot);
+
+	if (searchResults.size() == 0) {
+		std::cout << "No contacts were found!" << std::endl;
+	}
+}
 //// //// /////
 //// CREATING
 
