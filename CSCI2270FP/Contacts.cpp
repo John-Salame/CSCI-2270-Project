@@ -228,15 +228,7 @@ void Contacts::search() {
 			}
 			if (stoi(y) == 2) { // user chose to delete the contact
 				Contact* c = searchResults[stoi(x)]->c;
-
-				currentlySortedBy = &firstNameRoot;
-				deleteTreeNode(c->firstTreePointer);
-				currentlySortedBy = &lastNameRoot;
-				deleteTreeNode(c->lastTreePointer);
-				currentlySortedBy = &birthdateRoot;
-				deleteTreeNode(c->birthTreePointer);
-
-				delete c; //finally, delete the Contact*
+				deleteFromAllTrees(c, true);
 				return;
 			}
 		}
@@ -437,12 +429,29 @@ void Contacts::createContact(std::string firstName, std::string lastName, std::s
 	std::cout << std::endl << "Added " << newContact->firstName << " to your contact list!" << std::endl;
 }
 
-
 //// //// ////
 //// EDITING
 void Contacts::editContact(Contact* editThis) {
 
 }
+
+//deletes all tree nodes with contact, then adds it back to all the trees
+void Contacts::postEdit(Contact* c)
+{
+	deleteFromAllTrees(c, false);
+	treeNode* firstNode = new treeNode;
+	treeNode* lastNode = new treeNode;
+	treeNode* birthNode = new treeNode;
+
+	firstNode->c = newContact;
+	lastNode->c = newContact;
+	birthNode->c = newContact;
+
+	addToFirstTree(firstNode);
+	addToLastTree(lastNode);
+	addToBirthTree(birthNode);
+}
+
 
 //helper function for deleteContact(); del is the treeNode to delete. this will only be called if del exists.
 treeNode* findReplacement(treeNode* del)
@@ -526,6 +535,27 @@ void Contacts::deleteTreeNode(treeNode* del) {
 	del->rightChild = 0;
 	delete del;
 	del = 0;
+}
+
+
+//delete all the treeNodes with Contact c, then delete the contact from the heap if deleteContact is true
+void Contacts::deleteFromAllTrees(Contact* c, bool deleteContact)
+{
+	treeNode** prevouslySortedBy = currentlySortedBy;
+	
+	currentlySortedBy = &firstNameRoot;
+	deleteTreeNode(c->firstTreePointer);
+	currentlySortedBy = &lastNameRoot;
+	deleteTreeNode(c->lastTreePointer);
+	currentlySortedBy = &birthdateRoot;
+	deleteTreeNode(c->birthTreePointer);
+	
+	currentlySortedBy = previouslySortedBy; //make currentlySortedBy point to what it was before deleteFromAllTrees was called
+	
+	if(deleteContact)
+	{
+		delete c;
+	}
 }
 
 
