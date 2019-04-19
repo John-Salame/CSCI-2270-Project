@@ -17,7 +17,6 @@ struct Contact { // actual contact
 	treeNode* firstTreePointer = nullptr;
 	treeNode* lastTreePointer = nullptr;
 	treeNode* birthTreePointer = nullptr;
-
 };
 
 struct treeNode { // used to build tree of contacts, built as if the tree is organized by first name alphabatized right now
@@ -36,9 +35,12 @@ public:
 	void createContact(); //create a contact from user input and return the pointer. Can be called as Contacts::createContact() instead of dot notation.
 	void createContact(std::string firstName, std::string lastName, std::string phoneNumber, std::string birthdate, std::string address, std::string email);
 	void editContact(Contact* editThis); //I think this should be in the GUI file with displayContact(). (There is no GUI file yet)
+	void postEdit(Contact* c); //deletes all tree nodes with contact, then adds it back to all the trees
 	void deleteTreeNode(treeNode* del);
+	void deleteFromAllTrees(Contact* c, bool deleteContact); //delete all the treeNodes with Contact c, then delete the contact from the heap if deleteContact is true
 
 	void search();
+	void search(std::string input); //overloaded for In Ji
 	void searchByFirstName(std::string userInput, treeNode* parse);
 	void searchByLastName(std::string userInput, treeNode* parse);
 	void searchByBirthdate(std::string userInput, treeNode* parse);
@@ -52,7 +54,7 @@ public:
 	void addToBirthTree(treeNode* c);
 
 	//accessor methods
-	treeNode* treeHead(); //return the pointer that currentlySortedBy points to
+	treeNode** treeHead(); //return the pointer that currentlySortedBy points to
 	void changeToFirstNames(); //make treeHead point to firstNamesRoot (in Contacts, not in main)
 	void changeToLastNames();
 	void changeToPhoneNumbers();

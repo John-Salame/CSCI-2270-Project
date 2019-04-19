@@ -4,6 +4,7 @@ Contacts::Contacts() {
 	firstNameRoot = nullptr;
 	lastNameRoot = nullptr;
 	birthdateRoot = nullptr;
+	currentlySortedBy = &firstNameRoot; //point to the firstNameRoot pointer so we sort by first names when we start the program
 }
 
 //// //// /////
@@ -183,18 +184,9 @@ void Contacts::clearSearchResults() {
 }
 
 void Contacts::search() {
-	std::cout << "Type your search term. Please do not type full name: " << std::endl;
+	std::cout << "Type your search term. Search by first name, last name, or phone number, but not full name." << std::endl;
 	std::string userInput = "";
 	std::cin >> userInput;
-	//remove spaces
-	std::string noSpaces = "";
-	for (int i = 0; i < userInput.length(); i++)
-	{
-		if (userInput[i] != ' ')
-		{
-			noSpaces += userInput[i];
-		}
-	}
 	userInput = toLowercase(userInput);
 	clearSearchResults();
 
@@ -236,18 +228,7 @@ void Contacts::search() {
 			}
 			if (stoi(y) == 2) { // user chose to delete the contact
 				Contact* c = searchResults[stoi(x)]->c;
-
-				currentlySortedBy = &firstNameRoot;
-				deleteTreeNode(c->firstTreePointer);
-				currentlySortedBy = &lastNameRoot;
-				deleteTreeNode(c->lastTreePointer);
-				currentlySortedBy = &birthdateRoot;
-				deleteTreeNode(c->birthTreePointer);
-
-				delete c; //finally, delete the Contact*
-
-				currentlySortedBy = &firstNameRoot;
-
+				deleteFromAllTrees(c, true);
 				return;
 			}
 		}
@@ -255,6 +236,22 @@ void Contacts::search() {
 	}
 }
 
+/* PRECONDITION: userInput is a name (or part of a name) or birthday, but not a full name or anything with a space
+* PURPOSE: Add matches to the searchResults member variable of Contacts.
+*/
+void Contacts::search(std::string userInput) {
+	userInput = toLowercase(userInput);
+	clearSearchResults(); //clear search results before adding anything
+
+						  //these 3 functions add matches to searchResults member variable
+	searchByFirstName(userInput, firstNameRoot);
+	searchByLastName(userInput, lastNameRoot);
+	searchByBirthdate(userInput, birthdateRoot);
+
+	if (searchResults.size() == 0) {
+		std::cout << "No contacts were found!" << std::endl;
+	}
+}
 //// //// /////
 //// CREATING
 
@@ -292,6 +289,7 @@ void Contacts::addToFirstTree(treeNode* given) {
 	else {
 		given->parent->rightChild = given;
 	}
+	given->c->firstTreePointer = given; //when you add a contact to a tree, report the treeNode in firstTreePointer of Contact
 } // done.
 
 void Contacts::addToLastTree(treeNode* given) {
@@ -334,6 +332,7 @@ void Contacts::addToLastTree(treeNode* given) {
 	else {
 		given->parent->rightChild = given;
 	}
+	given->c->lastTreePointer = given; //when you add a contact to a tree, report the treeNode in firstTreePointer of Contact
 } // done.
 
 void Contacts::addToBirthTree(treeNode* given) {
@@ -360,8 +359,11 @@ void Contacts::addToBirthTree(treeNode* given) {
 	else {
 		given->parent->rightChild = given;
 	}
+	given->c->birthTreePointer = given; //when you add a contact to a tree, report the treeNode in firstTreePointer of Contact
 }
 
+//// //// /////
+//// ADD TO ALL TREES
 void Contacts::createContact() {
 	Contact* newContact = new Contact;
 
@@ -395,14 +397,9 @@ void Contacts::createContact() {
 	lastNode->c = newContact;
 	birthNode->c = newContact;
 
-	newContact->firstTreePointer = firstNode;
-	newContact->lastTreePointer = lastNode;
-	newContact->birthTreePointer = birthNode;
-
 	addToFirstTree(firstNode);
 	addToLastTree(lastNode);
 	addToBirthTree(birthNode);
-	currentlySortedBy = &firstNameRoot; //point to the firstNameRoot pointer
 	std::cout << std::endl << "Added " << newContact->firstName << " to your contact list!" << std::endl;
 }
 
@@ -426,23 +423,35 @@ void Contacts::createContact(std::string firstName, std::string lastName, std::s
 	lastNode->c = newContact;
 	birthNode->c = newContact;
 
-	newContact->firstTreePointer = firstNode;
-	newContact->lastTreePointer = lastNode;
-	newContact->birthTreePointer = birthNode;
-
 	addToFirstTree(firstNode);
 	addToLastTree(lastNode);
 	addToBirthTree(birthNode);
-	currentlySortedBy = &firstNameRoot; //point to the firstNameRoot pointer
 	std::cout << std::endl << "Added " << newContact->firstName << " to your contact list!" << std::endl;
 }
-
 
 //// //// ////
 //// EDITING
 void Contacts::editContact(Contact* editThis) {
 
 }
+
+//deletes all tree nodes with contact, then adds it back to all the trees
+void Contacts::postEdit(Contact* c)
+{
+	deleteFromAllTrees(c, false);
+	treeNode* firstNode = new treeNode;
+	treeNode* lastNode = new treeNode;
+	treeNode* birthNode = new treeNode;
+
+	firstNode->c = c;
+	lastNode->c = c;
+	birthNode->c = c;
+
+	addToFirstTree(firstNode);
+	addToLastTree(lastNode);
+	addToBirthTree(birthNode);
+}
+
 
 //helper function for deleteContact(); del is the treeNode to delete. this will only be called if del exists.
 treeNode* findReplacement(treeNode* del)
@@ -529,10 +538,31 @@ void Contacts::deleteTreeNode(treeNode* del) {
 }
 
 
-//ACCESSOR METHODS
-treeNode* Contacts::treeHead()
+//delete all the treeNodes with Contact c, then delete the contact from the heap if deleteContact is true
+void Contacts::deleteFromAllTrees(Contact* c, bool deleteContact)
 {
-	return *currentlySortedBy;
+	treeNode** previouslySortedBy = currentlySortedBy;
+
+	currentlySortedBy = &firstNameRoot;
+	deleteTreeNode(c->firstTreePointer);
+	currentlySortedBy = &lastNameRoot;
+	deleteTreeNode(c->lastTreePointer);
+	currentlySortedBy = &birthdateRoot;
+	deleteTreeNode(c->birthTreePointer);
+
+	currentlySortedBy = previouslySortedBy; //make currentlySortedBy point to what it was before deleteFromAllTrees was called
+
+	if (deleteContact)
+	{
+		delete c;
+	}
+}
+
+
+//ACCESSOR METHODS
+treeNode** Contacts::treeHead()
+{
+	return currentlySortedBy;
 }
 void Contacts::changeToFirstNames()
 {
