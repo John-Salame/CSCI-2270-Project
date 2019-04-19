@@ -530,9 +530,9 @@ void Contacts::deleteTreeNode(treeNode* del) {
 
 
 //ACCESSOR METHODS
-treeNode* Contacts::treeHead()
+treeNode** Contacts::treeHead()
 {
-	return *currentlySortedBy;
+	return currentlySortedBy;
 }
 void Contacts::changeToFirstNames()
 {
