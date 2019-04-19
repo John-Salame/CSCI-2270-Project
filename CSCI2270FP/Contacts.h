@@ -52,7 +52,7 @@ public:
 	void addToBirthTree(treeNode* c);
 
 	//accessor methods
-	treeNode* treeHead(); //return the pointer that currentlySortedBy points to
+	treeNode** treeHead(); //return the pointer that currentlySortedBy points to
 	void changeToFirstNames(); //make treeHead point to firstNamesRoot (in Contacts, not in main)
 	void changeToLastNames();
 	void changeToPhoneNumbers();
