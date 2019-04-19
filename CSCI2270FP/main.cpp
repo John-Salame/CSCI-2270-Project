@@ -20,23 +20,17 @@ END_MESSAGE_MAP()
 
 
 BOOL CMyApp::InitInstance() {
-	CSingleDocTemplate* pDocTemplate; //Single Doc template
-	pDocTemplate = new CSingleDocTemplate(
-		IDR_MAINMENU,
-		RUNTIME_CLASS(CMyDocument),
-		RUNTIME_CLASS(CMyWindow),
-		RUNTIME_CLASS(CMyEditor)
-	);
-	AddDocTemplate(pDocTemplate);
-
-	CCommandLineInfo cmdInfo;
-
-	if (!ProcessShellCommand(cmdInfo)) {
-		return false;
+	SetRegistryKey(_T("Unhappy :<"));
+	
+	CMyWindow* pFrame = new CMyWindow;
+	if (!pFrame) {
+		return FALSE;
 	}
+	m_pMainWnd = pFrame;
+	pFrame->LoadFrame(IDR_MAINMENU);
 
-	m_pMainWnd->ShowWindow(SW_SHOW);
-	m_pMainWnd->UpdateWindow();
+	pFrame->ShowWindow(SW_SHOW);
+	pFrame->UpdateWindow();
 
 	return TRUE;
 }
