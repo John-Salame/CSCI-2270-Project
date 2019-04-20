@@ -4,6 +4,7 @@
 #include "mainFrame.h"
 #include "Contacts.h"
 #include "resource.h"
+#include "CMainDlg.h"
 
 void CMyApp::OnMenuExit() {
 	PostQuitMessage(0);
@@ -51,18 +52,33 @@ CMyForm::~CMyForm() {
 	//Left Blank
 }
 
+void CMyForm::OnBnClickedButtonOne() {
+	TRACE0("BUTTON1 PRESSED");
+	CString str;
+	GetDlgItemText(IDC_USEREDIT, str);
+	SetDlgItemText(IDC_USEREDIT, "");
+	SetDlgItemText(IDC_MAIN_DISPLAY, str);
+}
+
+
+void CMyForm::OnBnClickedButtonTwo() {
+	TRACE0("BUTTON2 PRESSED");
+	iCloud.createContact("Jeff", "Kaplan", "303-809-1352", "4/20/1999", "test", "test");
+	TRACE0("CREATE CONTACT");
+	CString str = (*iCloud.treeHead())->c->firstName.c_str();
+	SetDlgItemText(IDC_MAIN_DISPLAY, str);
+}
+
+
 //Frame Map
 IMPLEMENT_DYNCREATE(CMyWindow, CFrameWnd)
 BEGIN_MESSAGE_MAP(CMyWindow, CFrameWnd)
 	ON_WM_CREATE()
 END_MESSAGE_MAP()
 
-//Document Map
-IMPLEMENT_DYNCREATE(CMyDocument, CDocument)
-BEGIN_MESSAGE_MAP(CMyDocument, CDocument)
-END_MESSAGE_MAP()
-
 //Form View Map
 IMPLEMENT_DYNCREATE(CMyForm, CFormView)
 BEGIN_MESSAGE_MAP(CMyForm, CFormView)
+	ON_BN_CLICKED(IDC_BUTTON_ONE, &CMyForm::OnBnClickedButtonOne)
+	ON_BN_CLICKED(IDC_BUTTON_TWO, &CMyForm::OnBnClickedButtonTwo)
 END_MESSAGE_MAP()
