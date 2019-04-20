@@ -1,4 +1,6 @@
 #include "Contacts.h"
+#include <fstream>
+#include <sstream>
 
 Contacts::Contacts() {
 	firstNameRoot = nullptr;
@@ -72,6 +74,139 @@ std::string toLowercase(std::string x) { // takes a string, replaces it with low
 		x[i] = ascii; // the letter is now this new ascii. Converts back to char from int.
 	}
 	return x; // returns back the string
+}
+
+void inOrderSave(treeNode* curr, std::ofstream& saveStream) {
+	if (curr == nullptr) {
+		return;
+	}
+	inOrderSave(curr->leftChild, saveStream);
+	if (curr->c->firstName == "") {
+		saveStream << "<emptyfirstName>";
+	}
+	else {
+		saveStream << curr->c->firstName;
+	}
+	saveStream << ",";	
+	if (curr->c->lastName == "") {
+		saveStream << "<emptyLastName>";
+	}
+	else {
+		saveStream << curr->c->lastName;
+	}
+	saveStream << ",";
+	if (curr->c->phoneNumber == "") {
+		saveStream << "<emptyPhoneNumber>";
+	}
+	else {
+		saveStream << curr->c->phoneNumber;
+	}
+	saveStream << ",";
+	if (curr->c->birthdate == "") {
+		saveStream << "<emptyBirthdate>";
+	}
+	else {
+		saveStream << curr->c->birthdate;
+	}
+	saveStream << ",";
+	if (curr->c->address == "") {
+		saveStream << "<emptyAddress>";
+	}
+	else {
+		saveStream << curr->c->address;
+	}
+	saveStream << ",";
+	if (curr->c->email == "") {
+		saveStream << "<emptyEmail>";
+	}
+	else {
+		saveStream << curr->c->email;
+	}
+
+	saveStream << std::endl;
+	inOrderSave(curr->rightChild, saveStream);
+}
+
+bool Contacts::saveAllToFile(std::string fileName) {
+	std::ofstream saveStream;
+	saveStream.open("savefile.csv");
+	if (saveStream.is_open()) {
+		inOrderSave(firstNameRoot, saveStream);
+	}
+	else {
+		return false; // save stream couldn't be opened.
+	}
+	saveStream.close();
+	return true;
+}
+
+bool Contacts::loadAllFromFile(std::string fileName) {
+	std::string line;
+	std::string splitWord;
+
+	std::stringstream s;
+	int x = 1;
+
+	// first last phone birthdate address email
+
+	std::ifstream iS;
+	iS.open(fileName);
+	if (iS.is_open()) {
+		while (getline(iS, line)) {
+			std::string firstName = "";
+			std::string lastName = "";
+			std::string phoneNum = "";
+			std::string birthdate = "";
+			std::string address = "";
+			std::string email = "";
+			s.clear();
+			s << line;
+			while (getline(s, splitWord, ',')) {
+				if (splitWord[0] == '<') {
+					if (x == 6) {
+						x = 1;
+					}
+					else {
+						x++;
+					}
+				}
+				else {
+					switch (x) {
+					case 1:
+						firstName = splitWord;
+						x++;
+						break;
+					case 2:
+						lastName = splitWord;
+						x++;
+						break;
+					case 3:
+						phoneNum = splitWord;
+						x++;
+						break;
+					case 4:
+						birthdate = splitWord;
+						x++;
+						break;
+					case 5:
+						address = splitWord;
+						x++;
+						break;
+					case 6:
+						email = splitWord;
+						x = 1;
+						break;
+					}
+				}
+			}
+			createContact(firstName, lastName, phoneNum, birthdate, address, email);
+		}
+	}
+	else {
+		return false; // returns false if file can't be loaded in.
+	}
+	iS.close();
+	return true; // returns true if file was loaded in successfully.
 }
 
 //// //// /////

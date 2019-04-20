@@ -53,6 +53,8 @@ public:
 	void addToLastTree(treeNode* c);
 	void addToBirthTree(treeNode* c);
 
+	bool saveAllToFile(std::string x);
+	bool loadAllFromFile(std::string filename);
 	//accessor methods
 	treeNode** treeHead(); //return the pointer that currentlySortedBy points to
 	void changeToFirstNames(); //make treeHead point to firstNamesRoot (in Contacts, not in main)
