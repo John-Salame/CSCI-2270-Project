@@ -392,6 +392,7 @@ void Contacts::search(std::string userInput) {
 //// CREATING
 
 void Contacts::addToFirstTree(treeNode* given) {
+	given->c->firstTreePointer = given;
 	if (firstNameRoot == nullptr) {
 		firstNameRoot = given;
 		return;
@@ -428,6 +429,7 @@ void Contacts::addToFirstTree(treeNode* given) {
 } // done.
 
 void Contacts::addToLastTree(treeNode* given) {
+	given->c->lastTreePointer = given;
 	if (lastNameRoot == nullptr) {
 		lastNameRoot = given;
 		return;
@@ -470,6 +472,7 @@ void Contacts::addToLastTree(treeNode* given) {
 } // done.
 
 void Contacts::addToBirthTree(treeNode* given) {
+	given->c->birthTreePointer = given;
 	if (birthdateRoot == nullptr) {
 		birthdateRoot = given;
 		return;
@@ -529,11 +532,6 @@ void Contacts::createContact() {
 	firstNode->c = newContact;
 	lastNode->c = newContact;
 	birthNode->c = newContact;
-	
-	//these 3 lines keep track of the Contact's treeNode in each tree.
-	newContact->firstTreePointer = firstNode;
-	newContact->lastTreePointer = lastNode;
-	newContact->birthTreePointer = birthNode;
 
 	addToFirstTree(firstNode);
 	addToLastTree(lastNode);
@@ -561,11 +559,6 @@ void Contacts::createContact(std::string firstName, std::string lastName, std::s
 	lastNode->c = newContact;
 	birthNode->c = newContact;
 
-	//these 3 lines keep track of the Contact's treeNode in each tree.
-	newContact->firstTreePointer = firstNode;
-	newContact->lastTreePointer = lastNode;
-	newContact->birthTreePointer = birthNode;
-
 	addToFirstTree(firstNode);
 	addToLastTree(lastNode);
 	addToBirthTree(birthNode);
@@ -575,8 +568,22 @@ void Contacts::createContact(std::string firstName, std::string lastName, std::s
 
 //// //// ////
 //// EDITING
+
+//FOR TESTING IN OLD MAIN
 void Contacts::editContact(Contact* editThis) {
 
+}
+
+//OVERLOADED FOR IN JI. PASS IN POINTER TO CONTACT YOU WANT TO EDIT, THEN NAME, ETC.
+void Contacts::editContact(Contact* editThis, std::string firstName, std::string lastName, std::string phoneNumber, std::string birthdate, std::string address, std::string email) {
+	editThis->firstName = firstName;
+	editThis->lastName = lastName;
+	editThis->phoneNumber = phoneNumber;
+	editThis->birthdate = birthdate;
+	editThis->address = address;
+	editThis->email = email;
+
+	postEdit(editThis);
 }
 
 //deletes all tree nodes with contact, then adds it back to all the trees
@@ -590,11 +597,6 @@ void Contacts::postEdit(Contact* c)
 	firstNode->c = c;
 	lastNode->c = c;
 	birthNode->c = c;
-	
-	//these 3 lines keep track of the Contact's treeNode in each tree.
-	c->firstTreePointer = firstNode;
-	c->lastTreePointer = lastNode;
-	c->birthTreePointer = birthNode;
 
 	addToFirstTree(firstNode);
 	addToLastTree(lastNode);
