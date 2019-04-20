@@ -1,4 +1,5 @@
 #include "Contacts.h"
+#include <afx.h>
 
 Contacts::Contacts() {
 	firstNameRoot = nullptr;
@@ -433,6 +434,7 @@ void Contacts::createContact(std::string firstName, std::string lastName, std::s
 	addToFirstTree(firstNode);
 	addToLastTree(lastNode);
 	addToBirthTree(birthNode);
+	TRACE0("ADDED NEW CONTACT");
 	std::cout << std::endl << "Added " << newContact->firstName << " to your contact list!" << std::endl;
 }
 

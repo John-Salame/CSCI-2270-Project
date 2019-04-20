@@ -21,7 +21,7 @@ END_MESSAGE_MAP()
 
 BOOL CMyApp::InitInstance() {
 	SetRegistryKey(_T("Unhappy :<"));
-	
+
 	CMyWindow* pFrame = new CMyWindow;
 	if (!pFrame) {
 		return FALSE;

@@ -18,8 +18,12 @@ public:
 	CMyForm();
 	virtual ~CMyForm();
 
-	DECLARE_MESSAGE_MAP()
+	void OnBnClickedButtonOne();
+	void OnBnClickedButtonTwo();
 
+	DECLARE_MESSAGE_MAP()
+private:
+	Contacts iCloud;
 };
 
 class CMyWindow : public CFrameWnd {
@@ -31,10 +35,4 @@ public:
 	DECLARE_MESSAGE_MAP()
 
 	CMyForm* m_pMainView  = nullptr;
-};
-
-class CMyDocument : public CDocument {
-	DECLARE_DYNCREATE(CMyDocument)
-
-	DECLARE_MESSAGE_MAP()
 };
