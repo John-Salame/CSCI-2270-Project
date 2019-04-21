@@ -306,7 +306,7 @@ void Contacts::searchByBirthdate(std::string userInput, treeNode* parse) { // go
 
 void Contacts::addToSearchResults(treeNode* pointer) {
 	for (int i = 0; i < searchResults.size(); i++) {
-		if (searchResults[i]->c == pointer->c) {
+		if (searchResults[i] == pointer->c) {
 			return;
 		}
 	}
