@@ -477,17 +477,58 @@ void Contacts::addToBirthTree(treeNode* given) {
 		birthdateRoot = given;
 		return;
 	}
-	treeNode* parse = birthdateRoot;
+	std::stringstream givenDate(given->c->birthdate);
+	std::string gMon;
+	std::string gDay;
+	std::string gYr;
+	std::getline(givenDate, gMon, '/');
+	std::getline(givenDate, gDay, '/');
+	std::getline(givenDate, gYr);
+
+	treeNode* parse = birthdateRoot; //start with parse at root
 	bool isLeft = true;
 	while (parse != nullptr) {
 		given->parent = parse;
-		if (parse->c->birthdate > given->c->birthdate) {
+
+		std::stringstream parseDate(parse->c->birthdate);
+		std::string pMon;
+		std::string pDay;
+		std::string pYr;
+		std::getline(parseDate, pMon, '/');
+		std::getline(parseDate, pDay, '/');
+		std::getline(parseDate, pYr);
+
+		if (std::stoi(gMon) < std::stoi(pMon)) {
 			parse = parse->leftChild;
 			isLeft = true;
 		}
-		else {
+		else if (std::stoi(gMon) > std::stoi(pMon)) {
 			parse = parse->rightChild;
 			isLeft = false;
+		}
+		else //same month
+		{
+			if (std::stoi(gDay) < std::stoi(pDay)) {
+				parse = parse->leftChild;
+				isLeft = true;
+			}
+			else if (std::stoi(gDay) > std::stoi(pDay)) {
+				parse = parse->rightChild;
+				isLeft = false;
+			}
+			else //same month and day; make lesser years be a left child. Right child is >= years
+			{
+				if (gYr < pYr)
+				{
+					parse = parse->leftChild;
+					isLeft = true;
+				}
+				else
+				{
+					parse = parse->rightChild;
+					isLeft = false;
+				}
+			} //end of code for same month and day
 		}
 	}
 	if (isLeft) {
