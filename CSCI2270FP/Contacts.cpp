@@ -310,7 +310,7 @@ void Contacts::addToSearchResults(treeNode* pointer) {
 			return;
 		}
 	}
-	searchResults.push_back(pointer);
+	searchResults.push_back(pointer->c);
 }
 
 void Contacts::clearSearchResults() {

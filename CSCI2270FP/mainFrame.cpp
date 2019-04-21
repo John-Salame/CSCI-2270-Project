@@ -76,14 +76,14 @@ void CMyForm::OnBnClickedButtonOne() {
 	str = "Here are the Search Results: \r\n";
 
 	for (int i = 0; i < iCloud.getSearchResults().size(); i++) {
-		treeNode* node = iCloud.getSearchResults()[i];
+		Contact* node = iCloud.getSearchResults()[i];
 		number.Format("Search Result Number %d :\r\n", i + 1);
-		str = str + number + _T("\r\n") + node->c->firstName.c_str();
-		str = str + _T(" ") + node->c->lastName.c_str();
-		str = str + _T("\r\n") + node->c->phoneNumber.c_str();
-		str = str + _T("\r\n") + node->c->birthdate.c_str();
-		str = str + _T("\r\n") + node->c->address.c_str();
-		str = str + _T("\r\n") + node->c->email.c_str();
+		str = str + number + _T("\r\n") + node->firstName.c_str();
+		str = str + _T(" ") + node->lastName.c_str();
+		str = str + _T("\r\n") + node->phoneNumber.c_str();
+		str = str + _T("\r\n") + node->birthdate.c_str();
+		str = str + _T("\r\n") + node->address.c_str();
+		str = str + _T("\r\n") + node->email.c_str();
 		str = str + _T("\r\n");
 
 		MessageBox(str);
@@ -122,13 +122,13 @@ void CMyForm::OnBnClickedButtonTwo() {
 		//Display added (temporary, testing)
 		iCloud.search(fName);
 
-		treeNode* node = iCloud.getSearchResults()[0];
-		str = node->c->firstName.c_str();
-		str = str + _T("\r\n") + node->c->lastName.c_str();
-		str = str + _T("\r\n") + node->c->phoneNumber.c_str();
-		str = str + _T("\r\n") + node->c->birthdate.c_str();
-		str = str + _T("\r\n") + node->c->address.c_str();
-		str = str + _T("\r\n") + node->c->email.c_str();
+		Contact* node = iCloud.getSearchResults()[0];
+		str = node->firstName.c_str();
+		str = str + _T("\r\n") + node->lastName.c_str();
+		str = str + _T("\r\n") + node->phoneNumber.c_str();
+		str = str + _T("\r\n") + node->birthdate.c_str();
+		str = str + _T("\r\n") + node->address.c_str();
+		str = str + _T("\r\n") + node->email.c_str();
 
 		TRACE0(str);
 
@@ -137,22 +137,22 @@ void CMyForm::OnBnClickedButtonTwo() {
 	else if (hasSearched == true && hasSelected == true && index > -1) {
 		if (index < iCloud.getSearchResults().size()) {
 			TRACE0("EDITING A CONTACT!");
-			treeNode* node = iCloud.getSearchResults()[index];
-			str.Format(node->c->firstName.c_str());
+			Contact* node = iCloud.getSearchResults()[index];
+			str.Format(node->firstName.c_str());
 			AfxMessageBox(str);
 
-			iCloud.editContact(node->c, fName, lName, pNum, bDay, addR, eMail);
+			iCloud.editContact(node, fName, lName, pNum, bDay, addR, eMail);
 
 			str.Format(_T("%d"), index);
 			AfxMessageBox(str);
 
 			//For Debugging, Delete Below Later
-			str = node->c->firstName.c_str();
-			str = str + _T("\r\n") + node->c->lastName.c_str();
-			str = str + _T("\r\n") + node->c->phoneNumber.c_str();
-			str = str + _T("\r\n") + node->c->birthdate.c_str();
-			str = str + _T("\r\n") + node->c->address.c_str();
-			str = str + _T("\r\n") + node->c->email.c_str();
+			str = node->firstName.c_str();
+			str = str + _T("\r\n") + node->lastName.c_str();
+			str = str + _T("\r\n") + node->phoneNumber.c_str();
+			str = str + _T("\r\n") + node->birthdate.c_str();
+			str = str + _T("\r\n") + node->address.c_str();
+			str = str + _T("\r\n") + node->email.c_str();
 
 			SetDlgItemText(IDC_MAIN_DISPLAY, str);
 			str.Format("Add to Contacts!");
@@ -185,13 +185,13 @@ void CMyForm::OnBnClickedButtonThree() {
 	}
 	//Get/Populate values
 	if (hasSearched && index > -1) {
-		treeNode* node = iCloud.getSearchResults()[index];
-		SetDlgItemText(IDC_FIRSTNAMEEDIT, node->c->firstName.c_str());
-		SetDlgItemText(IDC_LASTNAMEEDIT, node->c->lastName.c_str());
-		SetDlgItemText(IDC_PhoneEdit, node->c->phoneNumber.c_str());
-		SetDlgItemText(IDC_BIRTHDATEPICK, node->c->birthdate.c_str());
-		SetDlgItemText(IDC_ADDRESSEDIT, node->c->address.c_str());
-		SetDlgItemText(IDC_EMAILEDIT, node->c->email.c_str());
+		Contact* node = iCloud.getSearchResults()[index];
+		SetDlgItemText(IDC_FIRSTNAMEEDIT, node->firstName.c_str());
+		SetDlgItemText(IDC_LASTNAMEEDIT, node->lastName.c_str());
+		SetDlgItemText(IDC_PhoneEdit, node->phoneNumber.c_str());
+		SetDlgItemText(IDC_BIRTHDATEPICK, node->birthdate.c_str());
+		SetDlgItemText(IDC_ADDRESSEDIT, node->address.c_str());
+		SetDlgItemText(IDC_EMAILEDIT, node->email.c_str());
 
 		str.Format("Edit Contact!");
 		GetDlgItem(IDC_BUTTON_TWO)->SetWindowText(str);
