@@ -1,5 +1,5 @@
 #include "Contacts.h"
-#include <afx.h>
+//#include <afx.h>
 #include <fstream>
 #include <sstream>
 
@@ -88,7 +88,7 @@ void inOrderSave(treeNode* curr, std::ofstream& saveStream) {
 	else {
 		saveStream << curr->c->firstName;
 	}
-	saveStream << ",";	
+	saveStream << ",";
 	if (curr->c->lastName == "") {
 		saveStream << "<emptyLastName>";
 	}
@@ -562,7 +562,7 @@ void Contacts::createContact(std::string firstName, std::string lastName, std::s
 	addToFirstTree(firstNode);
 	addToLastTree(lastNode);
 	addToBirthTree(birthNode);
-	TRACE0("ADDED NEW CONTACT");
+	//TRACE0("ADDED NEW CONTACT");
 	std::cout << std::endl << "Added " << newContact->firstName << " to your contact list!" << std::endl;
 }
 
@@ -571,7 +571,45 @@ void Contacts::createContact(std::string firstName, std::string lastName, std::s
 
 //FOR TESTING IN OLD MAIN
 void Contacts::editContact(Contact* editThis) {
+	std::string firstName;
+	std::cout << "What is the new contact's first name? : ";
+	std::cin >> firstName;
+	editThis->firstName = firstName;
 
+	std::string lastName;
+	std::cout << "What is the new contact's last name? : ";
+	std::cin >> lastName;
+	editThis->lastName = lastName;
+
+	std::string phoneNumber;
+	std::cout << "What is the new contact's phone number? Enter in xxx-xxx-xxxx format : ";
+	std::cin >> phoneNumber;
+	editThis->phoneNumber = phoneNumber;
+
+	std::string birthdate;
+	std::cout << "What is the new contact's birthdate? Enter in mm/dd/yyyy form : ";
+	std::cin >> birthdate;
+	editThis->birthdate = birthdate;
+
+	std::string address;
+	std::cout << "What is the new contact's address? : ";
+	getline(std::cin, address); //clear the \n left over from the >>
+	getline(std::cin, address); //actually get the address
+	editThis->address = address;
+
+	std::string email;
+	std::cout << "What is the new contact's address? : ";
+	getline(std::cin, email); //actually get the address
+	editThis->email = email;
+
+	editThis->firstName = firstName;
+	editThis->lastName = lastName;
+	editThis->phoneNumber = phoneNumber;
+	editThis->birthdate = birthdate;
+	editThis->address = address;
+	editThis->email = email;
+
+	postEdit(editThis);
 }
 
 //OVERLOADED FOR IN JI. PASS IN POINTER TO CONTACT YOU WANT TO EDIT, THEN NAME, ETC.
@@ -722,10 +760,43 @@ void Contacts::deleteFromAllTrees(Contact* c, bool deleteContact)
 }
 
 
+
+//HELPER FUNCTION FOR getContactsInOrder
+void getInOrder(treeNode* parse, std::vector<Contact*>& vec)
+{
+	if(parse == 0)
+	{
+		return;
+	}
+	else
+	{
+		getInOrder(parse->leftChild, vec);
+
+		vec.push_back(parse->c);
+
+		getInOrder(parse->rightChild, vec);
+	}
+}
+
+
 //ACCESSOR METHODS
 treeNode** Contacts::treeHead()
 {
 	return currentlySortedBy;
+}
+std::vector<treeNode*> Contacts::getSearchResults()
+{
+	return searchResults;
+}
+void Contacts::getContactsInOrder(std::vector<Contact*>& vec)
+{
+	//clear the vector
+	while(vec.size() > 0)
+	{
+		vec.pop_back();
+	}
+	//start at root of tree
+	getInOrder(*currentlySortedBy, vec);
 }
 void Contacts::changeToFirstNames()
 {
@@ -735,23 +806,7 @@ void Contacts::changeToLastNames()
 {
 	currentlySortedBy = &lastNameRoot;
 }
-void Contacts::changeToPhoneNumbers()
-{
-	//NOTHING YET
-}
 void Contacts::changeToBirthdates()
 {
 	currentlySortedBy = &birthdateRoot;
-}
-void Contacts::changeToAddresses()
-{
-	//NOTHING YET
-}
-void Contacts::changeToEmails()
-{
-	//NOTHING YET
-}
-std::vector<treeNode*> Contacts::getSearchResults()
-{
-	return searchResults;
 }
