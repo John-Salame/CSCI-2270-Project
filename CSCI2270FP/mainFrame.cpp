@@ -53,26 +53,40 @@ CMyForm::~CMyForm() {
 	//Left Blank
 }
 
+void CMyForm::resetEditFields() {
+	SetDlgItemText(IDC_FIRSTNAMEEDIT, "");
+	SetDlgItemText(IDC_LASTNAMEEDIT, "");
+	SetDlgItemText(IDC_PhoneEdit, "");
+	SetDlgItemText(IDC_ADDRESSEDIT, "");
+	SetDlgItemText(IDC_EMAILEDIT, "");
+}
+
+
 void CMyForm::OnBnClickedButtonOne() {
 	//To be: Search
 	TRACE0("BUTTON1 PRESSED");
 	CString str;
+	CString number;
 	GetDlgItemText(IDC_USEREDIT_SEARCH, str);
 	SetDlgItemText(IDC_USEREDIT_SEARCH, "");
+	MessageBox(str); //DEBUG
 	std::string searchContact = (LPCSTR)str;
 	iCloud.search(searchContact);
 
-	str = "Your Search Results: \r\n";
+	str = "Here are the Search Results: \r\n";
+
 	for (int i = 0; i < iCloud.getSearchResults().size(); i++) {
 		treeNode* node = iCloud.getSearchResults()[i];
-		str.Format("Search Result Number %d :", i + 1);
-		str = str + _T("\r\n") + node->c->firstName.c_str();
+		number.Format("Search Result Number %d :\r\n", i + 1);
+		str = str + number + _T("\r\n") + node->c->firstName.c_str();
 		str = str + _T(" ") + node->c->lastName.c_str();
 		str = str + _T("\r\n") + node->c->phoneNumber.c_str();
 		str = str + _T("\r\n") + node->c->birthdate.c_str();
 		str = str + _T("\r\n") + node->c->address.c_str();
 		str = str + _T("\r\n") + node->c->email.c_str();
 		str = str + _T("\r\n");
+
+		MessageBox(str);
 	}
 
 	hasSearched = true;
@@ -85,52 +99,74 @@ void CMyForm::OnBnClickedButtonTwo() {
 	TRACE0("BUTTON2 PRESSED // CONTACTS ADDING");
 	CString str;
 
-	//Get and store values
+	//Get info from Edits
 	GetDlgItemText(IDC_FIRSTNAMEEDIT, str);
 	std::string fName = (LPCSTR)str;
-
 	GetDlgItemText(IDC_LASTNAMEEDIT, str);
 	std::string lName = (LPCSTR)str;
-
 	GetDlgItemText(IDC_PhoneEdit, str);
 	std::string pNum = (LPCSTR)str;
-
 	GetDlgItemText(IDC_BIRTHDATEPICK, str);
 	std::string bDay = (LPCSTR)str;
-
 	GetDlgItemText(IDC_ADDRESSEDIT, str);
 	std::string addR = (LPCSTR)str;
-
 	GetDlgItemText(IDC_EMAILEDIT, str);
 	std::string eMail = (LPCSTR)str;
 
-	//Create Contact
-	iCloud.createContact(fName, lName, pNum, bDay, addR, eMail);
-	TRACE0("ADDED NEW CONTACT");
+	//Get and store values
+	if (!hasSelected) {
+		TRACE0("ADDING NEW CONTACT");
+		//Create Contact
+		iCloud.createContact(fName, lName, pNum, bDay, addR, eMail);
 
-	//Set Inputs to empty
-	SetDlgItemText(IDC_FIRSTNAMEEDIT, "");
-	SetDlgItemText(IDC_LASTNAMEEDIT, "");
-	SetDlgItemText(IDC_PhoneEdit, "");
-	SetDlgItemText(IDC_ADDRESSEDIT, "");
-	SetDlgItemText(IDC_EMAILEDIT, "");
+		//Display added (temporary, testing)
+		iCloud.search(fName);
 
-	//Display added (temporary, testing)
-	iCloud.search(fName);
+		treeNode* node = iCloud.getSearchResults()[0];
+		str = node->c->firstName.c_str();
+		str = str + _T("\r\n") + node->c->lastName.c_str();
+		str = str + _T("\r\n") + node->c->phoneNumber.c_str();
+		str = str + _T("\r\n") + node->c->birthdate.c_str();
+		str = str + _T("\r\n") + node->c->address.c_str();
+		str = str + _T("\r\n") + node->c->email.c_str();
 
-	treeNode* node = iCloud.getSearchResults()[0];
-	str = node->c->firstName.c_str();
-	str = str + _T("\r\n") + node->c->lastName.c_str();
-	str = str + _T("\r\n") + node->c->phoneNumber.c_str();
-	str = str + _T("\r\n") + node->c->birthdate.c_str();
-	str = str + _T("\r\n") + node->c->address.c_str();
-	str = str + _T("\r\n") + node->c->email.c_str();
+		TRACE0(str);
 
-	TRACE0(str);
+		SetDlgItemText(IDC_MAIN_DISPLAY, str);
+	}
+	else if (hasSearched == true && hasSelected == true && index > -1) {
+		if (index < iCloud.getSearchResults().size()) {
+			TRACE0("EDITING A CONTACT!");
+			treeNode* node = iCloud.getSearchResults()[index];
+			str.Format(node->c->firstName.c_str());
+			AfxMessageBox(str);
 
-	SetDlgItemText(IDC_MAIN_DISPLAY, str);
+			iCloud.editContact(node->c, fName, lName, pNum, bDay, addR, eMail);
+
+			str.Format(_T("%d"), index);
+			AfxMessageBox(str);
+
+			//For Debugging, Delete Below Later
+			str = node->c->firstName.c_str();
+			str = str + _T("\r\n") + node->c->lastName.c_str();
+			str = str + _T("\r\n") + node->c->phoneNumber.c_str();
+			str = str + _T("\r\n") + node->c->birthdate.c_str();
+			str = str + _T("\r\n") + node->c->address.c_str();
+			str = str + _T("\r\n") + node->c->email.c_str();
+
+			SetDlgItemText(IDC_MAIN_DISPLAY, str);
+			str.Format("Add to Contacts!");
+			GetDlgItem(IDC_BUTTON_TWO)->SetWindowText(str);
+			hasSearched = false;
+			hasSelected = false;
+		}
+		else {
+			SetDlgItemText(IDC_MAIN_DISPLAY, "CANNOT EDIT");
+		}
+	}
 	
 	TRACE0("RESET INPUT TO EMPTY");
+	resetEditFields();
 }
 
 void CMyForm::OnBnClickedButtonThree() {
@@ -138,17 +174,17 @@ void CMyForm::OnBnClickedButtonThree() {
 	CString str;
 	GetDlgItemText(IDC_NUMBEREDIT, str);
 	std::string selected_num = (LPCSTR)str;
-	int index = -1;
+	index = -1;
 	try {
 		index = stoi(selected_num);
 		index -= 1;
 	}
 	catch (...) {
+		MessageBox("You need to put in a value greater than 0!");
 		index = -1;
 	}
-
 	//Get/Populate values
-	if (hasSearched && index >= -1) {
+	if (hasSearched && index > -1) {
 		treeNode* node = iCloud.getSearchResults()[index];
 		SetDlgItemText(IDC_FIRSTNAMEEDIT, node->c->firstName.c_str());
 		SetDlgItemText(IDC_LASTNAMEEDIT, node->c->lastName.c_str());
@@ -157,7 +193,10 @@ void CMyForm::OnBnClickedButtonThree() {
 		SetDlgItemText(IDC_ADDRESSEDIT, node->c->address.c_str());
 		SetDlgItemText(IDC_EMAILEDIT, node->c->email.c_str());
 
-		hasSearched = false;
+		str.Format("Edit Contact!");
+		GetDlgItem(IDC_BUTTON_TWO)->SetWindowText(str);
+		hasSearched = true;
+		hasSelected = true;
 	}
 	else {
 		SetDlgItemText(IDC_FIRSTNAMEEDIT, "PLEASE");
@@ -168,6 +207,18 @@ void CMyForm::OnBnClickedButtonThree() {
 	}
 
 	SetDlgItemText(IDC_NUMBEREDIT, "");
+}
+
+void CMyForm::OnBnClickedButtonFour() {
+
+}
+
+void CMyForm::OnBnClickedButtonFive() {
+
+}
+
+void CMyForm::OnBnClickedButtonSix() {
+
 }
 
 
@@ -183,4 +234,7 @@ BEGIN_MESSAGE_MAP(CMyForm, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON_ONE, &CMyForm::OnBnClickedButtonOne)
 	ON_BN_CLICKED(IDC_BUTTON_TWO, &CMyForm::OnBnClickedButtonTwo)
 	ON_BN_CLICKED(IDC_BUTTON_THREE, &CMyForm::OnBnClickedButtonThree)
+	ON_BN_CLICKED(IDC_BUTTON_FOUR, &CMyForm::OnBnClickedButtonFour)
+	ON_BN_CLICKED(IDC_BUTTON_FIVE, &CMyForm::OnBnClickedButtonFive)
+	ON_BN_CLICKED(IDC_BUTTON_SIX, &CMyForm::OnBnClickedButtonSix)
 END_MESSAGE_MAP()

@@ -18,9 +18,12 @@
 #define IDC_ADDRESSEDIT                 1025
 #define IDC_EMAILEDIT                   1027
 #define IDC_BIRTHDATEPICK               1029
-#define IDC_EDIT8                       1030
 #define IDC_NUMBEREDIT                  1030
 #define IDC_BUTTON_THREE                1031
+#define IDC_BUTTON_FOUR                 1032
+#define IDC_BUTTON_FIVE                 1033
+#define IDC_BUTTON3                     1034
+#define IDC_BUTTON_SIX                  1034
 #define ID_MENU_SAVE                    40015
 #define ID_MENU_LOAD                    40016
 #define ID_MENU_EXIT                    40017
@@ -31,7 +34,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        122
 #define _APS_NEXT_COMMAND_VALUE         40018
-#define _APS_NEXT_CONTROL_VALUE         1032
+#define _APS_NEXT_CONTROL_VALUE         1035
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

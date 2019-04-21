@@ -18,14 +18,21 @@ public:
 	CMyForm();
 	virtual ~CMyForm();
 
+	void resetEditFields();
 	void OnBnClickedButtonOne();
 	void OnBnClickedButtonTwo();
 	void OnBnClickedButtonThree();
+	void OnBnClickedButtonFour();
+	void OnBnClickedButtonFive();
+	void OnBnClickedButtonSix();
 
 	DECLARE_MESSAGE_MAP()
 private:
 	Contacts iCloud;
 	bool hasSearched = false;
+	bool hasSelected = false;
+	int index = -1;
+	std::vector<Contact*> inOrder;
 };
 
 class CMyWindow : public CFrameWnd {
