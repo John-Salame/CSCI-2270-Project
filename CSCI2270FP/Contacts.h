@@ -35,7 +35,7 @@ public:
 	void createContact(); //create a contact from user input and return the pointer. Can be called as Contacts::createContact() instead of dot notation.
 	void createContact(std::string firstName, std::string lastName, std::string phoneNumber, std::string birthdate, std::string address, std::string email);
 	void editContact(Contact* editThis); //I think this should be in the GUI file with displayContact(). (There is no GUI file yet)
-	void editContact(Contact* editThis, std::string firstName, std::string lastName, std::string phoneNumber, std::string birthdate, std::string address, std::string email) {
+	void editContact(Contact* editThis, std::string firstName, std::string lastName, std::string phoneNumber, std::string birthdate, std::string address, std::string email);
 	void postEdit(Contact* c); //deletes all tree nodes with contact, then adds it back to all the trees
 	void deleteTreeNode(treeNode* del);
 	void deleteFromAllTrees(Contact* c, bool deleteContact); //delete all the treeNodes with Contact c, then delete the contact from the heap if deleteContact is true
@@ -56,15 +56,19 @@ public:
 
 	bool saveAllToFile(std::string x);
 	bool loadAllFromFile(std::string filename);
-	//accessor methods
+
+
+	//getters and setters
 	treeNode** treeHead(); //return the pointer that currentlySortedBy points to
+	std::vector<treeNode*> getSearchResults(); //return searchResults, vector won't change when a contact is deleted
+	void getContactsInOrder(std::vector<Contact*>& vec); //get all the contacts from a tree in order.
 	void changeToFirstNames(); //make treeHead point to firstNamesRoot (in Contacts, not in main)
 	void changeToLastNames();
 	void changeToPhoneNumbers();
 	void changeToBirthdates();
 	void changeToAddresses();
 	void changeToEmails();
-	std::vector<treeNode*> getSearchResults(); //return searchResults, vector won't change when a contact is deleted
+
 
 private:
 	// the 'print all' tree is currently sorted by:
