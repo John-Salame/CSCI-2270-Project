@@ -73,5 +73,5 @@ private:
 	treeNode* firstNameRoot; // root of the tree sorted by first names
 	treeNode* lastNameRoot; // root of the tree sorted by last names
 	treeNode* birthdateRoot; // root of the tree sorted by birthday -> can make more of these easily
-	std::vector<treeNode*> searchResults;
+	std::vector<Contact*> searchResults;
 };
