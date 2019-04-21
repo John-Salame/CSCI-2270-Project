@@ -234,7 +234,7 @@ void Contacts::searchByFirstName(std::string userInput, treeNode* parse) {  // g
 	//in-order: instead of printing, add to vector
 	if (nodeSub == userInput)
 	{
-		searchResults.push_back(parse);
+		addToSearchResults(parse);
 	}
 
 	//only go right if the current node's first name is not > search term
@@ -263,7 +263,7 @@ void Contacts::searchByLastName(std::string userInput, treeNode* parse) { // goe
 	//in-order: instead of printing, add to vector
 	if (nodeSub == userInput)
 	{
-		searchResults.push_back(parse);
+		addToSearchResults(parse);
 	}
 
 	//only go right if the current node's first name is not > search term
@@ -293,7 +293,7 @@ void Contacts::searchByBirthdate(std::string userInput, treeNode* parse) { // go
 	//in-order: instead of printing, add to vector
 	if (nodeSub == userInput)
 	{
-		searchResults.push_back(parse);
+		addToSearchResults(parse);
 	}
 
 	//only go right if the current node's first name is not > search term
@@ -336,7 +336,7 @@ void Contacts::search() {
 	else {
 		std::string x = "100";
 		for (int i = 0; i < searchResults.size(); i++) {
-			std::cout << i << ") " << searchResults[i]->c->firstName << " " << searchResults[i]->c->lastName << std::endl;
+			std::cout << i << ") " << searchResults[i]->firstName << " " << searchResults[i]->lastName << std::endl;
 		}
 		//input an option to go to main menu, edit, or delete
 		while (stoi(x) > searchResults.size() || stoi(x) < 0) {
@@ -345,7 +345,7 @@ void Contacts::search() {
 			if (stoi(x) > searchResults.size() || stoi(x) < 0) {
 				std::cout << "Not a valid selection! Choose between 0 and " << searchResults.size() << std::endl;
 			}
-			displayDetailedContact(searchResults[stoi(x)]->c);
+			displayDetailedContact(searchResults[stoi(x)]);
 			std::cout << "0) Main Menu, 1) Edit, 2) Delete :";
 			std::string y = "100";
 			while (stoi(y) > 2 || stoi(y) < 0) {
@@ -359,11 +359,11 @@ void Contacts::search() {
 				return;
 			}
 			if (stoi(y) == 1) { // user chose to edit the contact selected
-				editContact(searchResults[stoi(x)]->c);
+				editContact(searchResults[stoi(x)]);
 				return;
 			}
 			if (stoi(y) == 2) { // user chose to delete the contact
-				Contact* c = searchResults[stoi(x)]->c;
+				Contact* c = searchResults[stoi(x)];
 				deleteFromAllTrees(c, true);
 				return;
 			}
@@ -780,11 +780,7 @@ void getInOrder(treeNode* parse, std::vector<Contact*>& vec)
 
 
 //ACCESSOR METHODS
-treeNode** Contacts::treeHead()
-{
-	return currentlySortedBy;
-}
-std::vector<treeNode*> Contacts::getSearchResults()
+std::vector<Contact*> Contacts::getSearchResults()
 {
 	return searchResults;
 }

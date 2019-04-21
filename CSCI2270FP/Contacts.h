@@ -60,15 +60,11 @@ public:
 
 
 	//getters and setters
-	treeNode** treeHead(); //return the pointer that currentlySortedBy points to
-	std::vector<treeNode*> getSearchResults(); //return searchResults, vector won't change when a contact is deleted
+	std::vector<Contact*> getSearchResults(); //return searchResults, vector won't change when a contact is deleted
 	void getContactsInOrder(std::vector<Contact*>& vec); //get all the contacts from a tree in order.
 	void changeToFirstNames(); //make treeHead point to firstNamesRoot (in Contacts, not in main)
 	void changeToLastNames();
-	void changeToPhoneNumbers();
 	void changeToBirthdates();
-	void changeToAddresses();
-	void changeToEmails();
 
 
 private:
