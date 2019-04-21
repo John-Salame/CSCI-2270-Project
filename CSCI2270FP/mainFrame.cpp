@@ -1,6 +1,7 @@
 #include <afxwin.h>
 #include <cstring>
 #include <string>
+#include <vector>
 #include "mainFrame.h"
 #include "Contacts.h"
 #include "resource.h"
@@ -53,20 +54,65 @@ CMyForm::~CMyForm() {
 }
 
 void CMyForm::OnBnClickedButtonOne() {
+	//To be: Search
 	TRACE0("BUTTON1 PRESSED");
 	CString str;
-	GetDlgItemText(IDC_USEREDIT, str);
-	SetDlgItemText(IDC_USEREDIT, "");
+	GetDlgItemText(IDC_USEREDIT_SEARCH, str);
+	SetDlgItemText(IDC_USEREDIT_SEARCH, "");
 	SetDlgItemText(IDC_MAIN_DISPLAY, str);
 }
 
 
 void CMyForm::OnBnClickedButtonTwo() {
-	TRACE0("BUTTON2 PRESSED");
-	iCloud.createContact("Jeff", "Kaplan", "303-809-1352", "4/20/1999", "test", "test");
-	TRACE0("CREATE CONTACT");
-	CString str = (*iCloud.treeHead())->c->firstName.c_str();
+	//Add to Contacts
+	TRACE0("BUTTON2 PRESSED // CONTACTS ADDING");
+	CString str;
+
+	//Get and store values
+	GetDlgItemText(IDC_FIRSTNAMEEDIT, str);
+	std::string fName = (LPCSTR)str;
+
+	GetDlgItemText(IDC_LASTNAMEEDIT, str);
+	std::string lName = (LPCSTR)str;
+
+	GetDlgItemText(IDC_PhoneEdit, str);
+	std::string pNum = (LPCSTR)str;
+
+	GetDlgItemText(IDC_BIRTHDATEPICK, str);
+	std::string bDay = (LPCSTR)str;
+
+	GetDlgItemText(IDC_ADDRESSEDIT, str);
+	std::string addR = (LPCSTR)str;
+
+	GetDlgItemText(IDC_EMAILEDIT, str);
+	std::string eMail = (LPCSTR)str;
+
+	//Create Contact
+	iCloud.createContact(fName, lName, pNum, bDay, addR, eMail);
+	TRACE0("ADDED NEW CONTACT");
+
+	//Set Inputs to empty
+	SetDlgItemText(IDC_FIRSTNAMEEDIT, "");
+	SetDlgItemText(IDC_LASTNAMEEDIT, "");
+	SetDlgItemText(IDC_PhoneEdit, "");
+	SetDlgItemText(IDC_ADDRESSEDIT, "");
+	SetDlgItemText(IDC_EMAILEDIT, "");
+
+	//Display added (temporary, testing)
+	iCloud.search(fName);
+
+	str = iCloud.getSearchResults()[0]->c->firstName.c_str();
+	str = str + _T("\r\n") + iCloud.getSearchResults()[0]->c->lastName.c_str();
+	str = str + _T("\r\n") + iCloud.getSearchResults()[0]->c->phoneNumber.c_str();
+	str = str + _T("\r\n") + iCloud.getSearchResults()[0]->c->birthdate.c_str();
+	str = str + _T("\r\n") + iCloud.getSearchResults()[0]->c->address.c_str();
+	str = str + _T("\r\n") + iCloud.getSearchResults()[0]->c->email.c_str();
+
+	TRACE0(str);
+
 	SetDlgItemText(IDC_MAIN_DISPLAY, str);
+	
+	TRACE0("RESET INPUT TO EMPTY");
 }
 
 
