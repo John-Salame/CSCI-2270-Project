@@ -1,7 +1,7 @@
 /** CSCI-2270 - Data Structures Project.
 John Salame - 109001053
 Kyran Butler - 108492940
-Inji Chung -
+In Ji Chung - 109215841
 g++ -std=c++11 main.cpp -o runner
 */
 
@@ -15,7 +15,7 @@ g++ -std=c++11 main.cpp -o runner
 
 //Main App Map
 BEGIN_MESSAGE_MAP(CMyApp, CWinApp)
-	ON_COMMAND(ID_MENU_EXIT, OnMenuExit)
+	ON_COMMAND(ID_MENU_EXIT, &CMyApp::OnMenuExit)
 END_MESSAGE_MAP()
 
 

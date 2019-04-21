@@ -25,6 +25,11 @@ public:
 	void OnBnClickedButtonFour();
 	void OnBnClickedButtonFive();
 	void OnBnClickedButtonSix();
+	void OnBnClickedButtonDelete();
+
+	//Functions for use in Main Menu
+	void MenuLoadHelper();
+	void MenuSaveHelper();
 
 	DECLARE_MESSAGE_MAP()
 private:

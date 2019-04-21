@@ -149,6 +149,8 @@ void CMyForm::OnBnClickedButtonTwo() {
 			SetDlgItemText(IDC_MAIN_DISPLAY, str);
 			str.Format("Add to Contacts!");
 			GetDlgItem(IDC_BUTTON_TWO)->SetWindowText(str);
+			str.Format("---");
+			GetDlgItem(IDC_BUTTON_DELETE)->SetWindowText(str);
 			hasSearched = false;
 			hasSelected = false;
 		}
@@ -168,6 +170,8 @@ void CMyForm::OnBnClickedButtonThree() {
 	GetDlgItemText(IDC_NUMBEREDIT, str);
 	std::string selected_num = (LPCSTR)str;
 	index = -1;
+	//Redundant block, already prevents negatives and non numerical
+	//Delete later
 	try {
 		index = stoi(selected_num);
 		index -= 1;
@@ -176,6 +180,7 @@ void CMyForm::OnBnClickedButtonThree() {
 		MessageBox("You need to put in a value greater than 0!");
 		index = -1;
 	}
+
 	//Get/Populate values
 	if (hasSearched && index > -1) {
 		Contact* node = iCloud.getSearchResults()[index];
@@ -188,6 +193,10 @@ void CMyForm::OnBnClickedButtonThree() {
 
 		str.Format("Edit Contact!");
 		GetDlgItem(IDC_BUTTON_TWO)->SetWindowText(str);
+		str.Format("DELETE ENTRY");
+		GetDlgItem(IDC_BUTTON_DELETE)->SetWindowText(str);
+		str.Format("PLEASE EDIT YOUR CONTACT OR DELETE");
+		GetDlgItem(IDC_MAIN_DISPLAY)->SetWindowText(str);
 		hasSearched = true;
 		hasSelected = true;
 	}
@@ -268,6 +277,53 @@ void CMyForm::OnBnClickedButtonSix() {
 	SetDlgItemText(IDC_MAIN_DISPLAY, str);
 }
 
+void CMyForm::OnBnClickedButtonDelete() {
+	//Delete Element once selected element
+	TRACE0("DELETE BUTTON // DELETE");
+	CString str;
+	CString element;
+	if (hasSelected) {
+		Contact* node = iCloud.getSearchResults()[index];
+		element = "Deleted ";
+		element = element + node->firstName.c_str();
+		element = element + _T(" ") + node->lastName.c_str();
+		element = element + _T(" from your contacts!");
+		SetDlgItemText(IDC_MAIN_DISPLAY, element);
+
+		iCloud.deleteFromAllTrees(node, TRUE);
+		resetEditFields();
+
+		str.Format("---");
+		GetDlgItem(IDC_BUTTON_DELETE)->SetWindowText(str);
+		str.Format("Add to Contacts!");
+		GetDlgItem(IDC_BUTTON_TWO)->SetWindowText(str);
+		str.Format("---");
+		hasSearched = false;
+		hasSelected = false;
+	}
+}
+
+void CMyForm::MenuLoadHelper() {
+	//These functions are used for main menu ONLY
+	CString str = "Loading From File! ...";
+	TRACE0("LOAD FILE FUNCTION CALLED");
+	iCloud.loadAllFromFile();
+
+	str += _T("\r\n\r\n...Loaded!");
+	SetDlgItemText(IDC_MAIN_DISPLAY, str);
+	resetEditFields();
+}
+
+void CMyForm::MenuSaveHelper() {
+	//These functions are used for main menu ONLY
+	CString str = "Saving to File! ...";
+	TRACE0("SAVE FILE FUNCTION CALLED");
+	iCloud.saveAllToFile("savefile.csv");
+
+	str += _T("\r\n\r\n...Saved!");
+	resetEditFields();
+}
+
 
 //Frame Map
 IMPLEMENT_DYNCREATE(CMyWindow, CFrameWnd)
@@ -284,4 +340,7 @@ BEGIN_MESSAGE_MAP(CMyForm, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON_FOUR, &CMyForm::OnBnClickedButtonFour)
 	ON_BN_CLICKED(IDC_BUTTON_FIVE, &CMyForm::OnBnClickedButtonFive)
 	ON_BN_CLICKED(IDC_BUTTON_SIX, &CMyForm::OnBnClickedButtonSix)
+	ON_BN_CLICKED(IDC_BUTTON_DELETE, &CMyForm::OnBnClickedButtonDelete)
+	ON_BN_CLICKED(IDC_BUTTON_LOAD, &CMyForm::MenuLoadHelper)
+	ON_BN_CLICKED(IDC_BUTTON_SAVE, &CMyForm::MenuSaveHelper)
 END_MESSAGE_MAP()

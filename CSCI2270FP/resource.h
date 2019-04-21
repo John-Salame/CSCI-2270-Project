@@ -22,8 +22,11 @@
 #define IDC_BUTTON_THREE                1031
 #define IDC_BUTTON_FOUR                 1032
 #define IDC_BUTTON_FIVE                 1033
-#define IDC_BUTTON3                     1034
 #define IDC_BUTTON_SIX                  1034
+#define IDC_BUTTON_DELETE               1035
+#define IDC_BUTTON_SAVE                 1036
+#define IDC_BUTTON2                     1037
+#define IDC_BUTTON_LOAD                 1037
 #define ID_MENU_SAVE                    40015
 #define ID_MENU_LOAD                    40016
 #define ID_MENU_EXIT                    40017
@@ -34,7 +37,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        122
 #define _APS_NEXT_COMMAND_VALUE         40018
-#define _APS_NEXT_CONTROL_VALUE         1035
+#define _APS_NEXT_CONTROL_VALUE         1038
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
