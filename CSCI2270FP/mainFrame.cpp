@@ -59,6 +59,21 @@ void CMyForm::OnBnClickedButtonOne() {
 	CString str;
 	GetDlgItemText(IDC_USEREDIT_SEARCH, str);
 	SetDlgItemText(IDC_USEREDIT_SEARCH, "");
+	std::string searchContact = (LPCSTR)str;
+	iCloud.search(searchContact);
+
+	str = "Your Search Results: \r\n";
+	for (int i = 0; i < iCloud.getSearchResults().size(); i++) {
+		treeNode* node = iCloud.getSearchResults()[i];
+		str = str + _T("\r\n") + node->c->firstName.c_str();
+		str = str + _T(" ") + node->c->lastName.c_str();
+		str = str + _T("\r\n") + node->c->phoneNumber.c_str();
+		str = str + _T("\r\n") + node->c->birthdate.c_str();
+		str = str + _T("\r\n") + node->c->address.c_str();
+		str = str + _T("\r\n") + node->c->email.c_str();
+		str = str + _T("\r\n");
+	}
+
 	SetDlgItemText(IDC_MAIN_DISPLAY, str);
 }
 
@@ -101,12 +116,13 @@ void CMyForm::OnBnClickedButtonTwo() {
 	//Display added (temporary, testing)
 	iCloud.search(fName);
 
-	str = iCloud.getSearchResults()[0]->c->firstName.c_str();
-	str = str + _T("\r\n") + iCloud.getSearchResults()[0]->c->lastName.c_str();
-	str = str + _T("\r\n") + iCloud.getSearchResults()[0]->c->phoneNumber.c_str();
-	str = str + _T("\r\n") + iCloud.getSearchResults()[0]->c->birthdate.c_str();
-	str = str + _T("\r\n") + iCloud.getSearchResults()[0]->c->address.c_str();
-	str = str + _T("\r\n") + iCloud.getSearchResults()[0]->c->email.c_str();
+	treeNode* node = iCloud.getSearchResults()[0];
+	str = node->c->firstName.c_str();
+	str = str + _T("\r\n") + node->c->lastName.c_str();
+	str = str + _T("\r\n") + node->c->phoneNumber.c_str();
+	str = str + _T("\r\n") + node->c->birthdate.c_str();
+	str = str + _T("\r\n") + node->c->address.c_str();
+	str = str + _T("\r\n") + node->c->email.c_str();
 
 	TRACE0(str);
 
