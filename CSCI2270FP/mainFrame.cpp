@@ -69,7 +69,6 @@ void CMyForm::OnBnClickedButtonOne() {
 	CString number;
 	GetDlgItemText(IDC_USEREDIT_SEARCH, str);
 	SetDlgItemText(IDC_USEREDIT_SEARCH, "");
-	MessageBox(str); //DEBUG
 	std::string searchContact = (LPCSTR)str;
 	iCloud.search(searchContact);
 
@@ -78,15 +77,13 @@ void CMyForm::OnBnClickedButtonOne() {
 	for (int i = 0; i < iCloud.getSearchResults().size(); i++) {
 		Contact* node = iCloud.getSearchResults()[i];
 		number.Format("Search Result Number %d :\r\n", i + 1);
-		str = str + number + _T("\r\n") + node->firstName.c_str();
+		str = str + number + node->firstName.c_str();
 		str = str + _T(" ") + node->lastName.c_str();
 		str = str + _T("\r\n") + node->phoneNumber.c_str();
 		str = str + _T("\r\n") + node->birthdate.c_str();
 		str = str + _T("\r\n") + node->address.c_str();
 		str = str + _T("\r\n") + node->email.c_str();
-		str = str + _T("\r\n");
-
-		MessageBox(str);
+		str = str + _T("\r\n\r\n");
 	}
 
 	hasSearched = true;
@@ -138,13 +135,8 @@ void CMyForm::OnBnClickedButtonTwo() {
 		if (index < iCloud.getSearchResults().size()) {
 			TRACE0("EDITING A CONTACT!");
 			Contact* node = iCloud.getSearchResults()[index];
-			str.Format(node->firstName.c_str());
-			AfxMessageBox(str);
 
 			iCloud.editContact(node, fName, lName, pNum, bDay, addR, eMail);
-
-			str.Format(_T("%d"), index);
-			AfxMessageBox(str);
 
 			//For Debugging, Delete Below Later
 			str = node->firstName.c_str();
@@ -170,6 +162,7 @@ void CMyForm::OnBnClickedButtonTwo() {
 }
 
 void CMyForm::OnBnClickedButtonThree() {
+	//Select From Search
 	TRACE0("BUTTON THREE //EDIT");
 	CString str;
 	GetDlgItemText(IDC_NUMBEREDIT, str);
@@ -210,15 +203,69 @@ void CMyForm::OnBnClickedButtonThree() {
 }
 
 void CMyForm::OnBnClickedButtonFour() {
+	//Display sorted by First Name
+	TRACE0("BUTTON 4 // SORT BY FIRST NAME");
+	CString str;
+	iCloud.changeToFirstNames(); //Change setting to 1st name
+	iCloud.getContactsInOrder(inOrder);
 
+	str = "Here are the contacts sorted by First Name: \r\n";
+	for (int i = 0; i < inOrder.size(); i++) {
+		Contact* node = inOrder[i];
+		str = str + node->firstName.c_str();
+		str = str + _T(" ") + node->lastName.c_str();
+		str = str + _T("\r\n") + node->phoneNumber.c_str();
+		str = str + _T("\r\n") + node->birthdate.c_str();
+		str = str + _T("\r\n") + node->address.c_str();
+		str = str + _T("\r\n") + node->email.c_str();
+		str = str + _T("\r\n\r\n");
+	}
+
+	SetDlgItemText(IDC_MAIN_DISPLAY, str);
 }
 
 void CMyForm::OnBnClickedButtonFive() {
+	//Display sorted by First Name
+	TRACE0("BUTTON 5 // SORT BY LAST NAME");
+	CString str;
+	iCloud.changeToLastNames(); //Change setting to 1st name
+	iCloud.getContactsInOrder(inOrder);
 
+	str = "Here are the contacts sorted by Last Name: \r\n";
+	for (int i = 0; i < inOrder.size(); i++) {
+		Contact* node = inOrder[i];
+		str = str + node->firstName.c_str();
+		str = str + _T(" ") + node->lastName.c_str();
+		str = str + _T("\r\n") + node->phoneNumber.c_str();
+		str = str + _T("\r\n") + node->birthdate.c_str();
+		str = str + _T("\r\n") + node->address.c_str();
+		str = str + _T("\r\n") + node->email.c_str();
+		str = str + _T("\r\n\r\n");
+	}
+
+	SetDlgItemText(IDC_MAIN_DISPLAY, str);
 }
 
 void CMyForm::OnBnClickedButtonSix() {
+	//Display sorted by First Name
+	TRACE0("BUTTON 6 // SORT BY BIRTHDATE");
+	CString str;
+	iCloud.changeToBirthdates(); //Change setting to 1st name
+	iCloud.getContactsInOrder(inOrder);
 
+	str = "Here are the contacts sorted by Birth Date: \r\n";
+	for (int i = 0; i < inOrder.size(); i++) {
+		Contact* node = inOrder[i];
+		str = str + node->firstName.c_str();
+		str = str + _T(" ") + node->lastName.c_str();
+		str = str + _T("\r\n") + node->phoneNumber.c_str();
+		str = str + _T("\r\n") + node->birthdate.c_str();
+		str = str + _T("\r\n") + node->address.c_str();
+		str = str + _T("\r\n") + node->email.c_str();
+		str = str + _T("\r\n\r\n");
+	}
+
+	SetDlgItemText(IDC_MAIN_DISPLAY, str);
 }
 
 
