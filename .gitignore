@@ -42,3 +42,6 @@
 *.tlog
 *.lastbuildstate
 unsuccessfulbuild
+/Release/vc141.pdb
+/Release/Data Structs Program.pdb
+/Release/CSCI2270FP.res
