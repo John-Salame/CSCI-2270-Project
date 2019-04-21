@@ -46,7 +46,7 @@ int CMyWindow::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 }
 
 CMyForm::CMyForm() : CFormView(CMyForm::IDD) {
-
+	
 }
 
 CMyForm::~CMyForm() {

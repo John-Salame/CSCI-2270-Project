@@ -55,7 +55,8 @@ public:
 	void addToBirthTree(treeNode* c);
 
 	bool saveAllToFile(std::string x);
-	bool loadAllFromFile(std::string filename);
+	bool loadAllFromFile();
+	//bool loadAllFromFile(std::string filename);
 
 
 	//getters and setters

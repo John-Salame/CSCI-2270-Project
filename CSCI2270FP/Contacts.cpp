@@ -88,35 +88,35 @@ void inOrderSave(treeNode* curr, std::ofstream& saveStream) {
 	else {
 		saveStream << curr->c->firstName;
 	}
-	saveStream << ",";
+	saveStream << "*";
 	if (curr->c->lastName == "") {
 		saveStream << "<emptyLastName>";
 	}
 	else {
 		saveStream << curr->c->lastName;
 	}
-	saveStream << ",";
+	saveStream << "*";
 	if (curr->c->phoneNumber == "") {
 		saveStream << "<emptyPhoneNumber>";
 	}
 	else {
 		saveStream << curr->c->phoneNumber;
 	}
-	saveStream << ",";
+	saveStream << "*";
 	if (curr->c->birthdate == "") {
 		saveStream << "<emptyBirthdate>";
 	}
 	else {
 		saveStream << curr->c->birthdate;
 	}
-	saveStream << ",";
+	saveStream << "*";
 	if (curr->c->address == "") {
 		saveStream << "<emptyAddress>";
 	}
 	else {
 		saveStream << curr->c->address;
 	}
-	saveStream << ",";
+	saveStream << "*";
 	if (curr->c->email == "") {
 		saveStream << "<emptyEmail>";
 	}
@@ -141,7 +141,7 @@ bool Contacts::saveAllToFile(std::string fileName) {
 	return true;
 }
 
-bool Contacts::loadAllFromFile(std::string fileName) {
+bool Contacts::loadAllFromFile() {
 	std::string line;
 	std::string splitWord;
 
@@ -151,7 +151,7 @@ bool Contacts::loadAllFromFile(std::string fileName) {
 	// first last phone birthdate address email
 
 	std::ifstream iS;
-	iS.open(fileName);
+	iS.open("savefile.csv");
 	if (iS.is_open()) {
 		while (getline(iS, line)) {
 			std::string firstName = "";
@@ -162,7 +162,7 @@ bool Contacts::loadAllFromFile(std::string fileName) {
 			std::string email = "";
 			s.clear();
 			s << line;
-			while (getline(s, splitWord, ',')) {
+			while (getline(s, splitWord, '*')) {
 				if (splitWord[0] == '<') {
 					if (x == 6) {
 						x = 1;
