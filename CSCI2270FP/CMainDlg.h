@@ -13,6 +13,7 @@ public:
 	CEdit m_Birthdate;		//B-Day
 	CEdit m_Address;		//Address
 	CEdit m_Email;			//Email
+	CEdit m_Number;			//Number of Searched Element
 	CMainDlg(CWnd* pParent = nullptr);   // standard constructor
 	virtual BOOL OnInitDialog();
 	virtual ~CMainDlg();

@@ -32,6 +32,7 @@ void CMainDlg::DoDataExchange(CDataExchange* pDX) {
 	DDX_Control(pDX, IDC_BIRTHDATEPICK, m_Birthdate);
 	DDX_Control(pDX, IDC_ADDRESSEDIT, m_Address);
 	DDX_Control(pDX, IDC_EMAILEDIT, m_Email);
+	DDX_Control(pDX, IDC_NUMBEREDIT, m_Number);
 }
 
 IMPLEMENT_DYNAMIC(CMainDlg, CDialog)

@@ -20,10 +20,12 @@ public:
 
 	void OnBnClickedButtonOne();
 	void OnBnClickedButtonTwo();
+	void OnBnClickedButtonThree();
 
 	DECLARE_MESSAGE_MAP()
 private:
 	Contacts iCloud;
+	bool hasSearched = false;
 };
 
 class CMyWindow : public CFrameWnd {

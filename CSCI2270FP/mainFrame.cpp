@@ -65,6 +65,7 @@ void CMyForm::OnBnClickedButtonOne() {
 	str = "Your Search Results: \r\n";
 	for (int i = 0; i < iCloud.getSearchResults().size(); i++) {
 		treeNode* node = iCloud.getSearchResults()[i];
+		str.Format("Search Result Number %d :", i + 1);
 		str = str + _T("\r\n") + node->c->firstName.c_str();
 		str = str + _T(" ") + node->c->lastName.c_str();
 		str = str + _T("\r\n") + node->c->phoneNumber.c_str();
@@ -74,6 +75,7 @@ void CMyForm::OnBnClickedButtonOne() {
 		str = str + _T("\r\n");
 	}
 
+	hasSearched = true;
 	SetDlgItemText(IDC_MAIN_DISPLAY, str);
 }
 
@@ -131,6 +133,43 @@ void CMyForm::OnBnClickedButtonTwo() {
 	TRACE0("RESET INPUT TO EMPTY");
 }
 
+void CMyForm::OnBnClickedButtonThree() {
+	TRACE0("BUTTON THREE //EDIT");
+	CString str;
+	GetDlgItemText(IDC_NUMBEREDIT, str);
+	std::string selected_num = (LPCSTR)str;
+	int index = -1;
+	try {
+		index = stoi(selected_num);
+		index -= 1;
+	}
+	catch (...) {
+		index = -1;
+	}
+
+	//Get/Populate values
+	if (hasSearched && index >= -1) {
+		treeNode* node = iCloud.getSearchResults()[index];
+		SetDlgItemText(IDC_FIRSTNAMEEDIT, node->c->firstName.c_str());
+		SetDlgItemText(IDC_LASTNAMEEDIT, node->c->lastName.c_str());
+		SetDlgItemText(IDC_PhoneEdit, node->c->phoneNumber.c_str());
+		SetDlgItemText(IDC_BIRTHDATEPICK, node->c->birthdate.c_str());
+		SetDlgItemText(IDC_ADDRESSEDIT, node->c->address.c_str());
+		SetDlgItemText(IDC_EMAILEDIT, node->c->email.c_str());
+
+		hasSearched = false;
+	}
+	else {
+		SetDlgItemText(IDC_FIRSTNAMEEDIT, "PLEASE");
+		SetDlgItemText(IDC_LASTNAMEEDIT, "SEARCH");
+		SetDlgItemText(IDC_PhoneEdit, "A");
+		SetDlgItemText(IDC_ADDRESSEDIT, "PERSON");
+		SetDlgItemText(IDC_EMAILEDIT, "FIRST");
+	}
+
+	SetDlgItemText(IDC_NUMBEREDIT, "");
+}
+
 
 //Frame Map
 IMPLEMENT_DYNCREATE(CMyWindow, CFrameWnd)
@@ -143,4 +182,5 @@ IMPLEMENT_DYNCREATE(CMyForm, CFormView)
 BEGIN_MESSAGE_MAP(CMyForm, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON_ONE, &CMyForm::OnBnClickedButtonOne)
 	ON_BN_CLICKED(IDC_BUTTON_TWO, &CMyForm::OnBnClickedButtonTwo)
+	ON_BN_CLICKED(IDC_BUTTON_THREE, &CMyForm::OnBnClickedButtonThree)
 END_MESSAGE_MAP()
