@@ -182,7 +182,7 @@ void CMyForm::OnBnClickedButtonThree() {
 	}
 
 	//Get/Populate values
-	if (hasSearched && index > -1) {
+	if (hasSearched && index > -1 && index < iCloud.getSearchResults().size()) {
 		Contact* node = iCloud.getSearchResults()[index];
 		SetDlgItemText(IDC_FIRSTNAMEEDIT, node->firstName.c_str());
 		SetDlgItemText(IDC_LASTNAMEEDIT, node->lastName.c_str());
@@ -204,8 +204,8 @@ void CMyForm::OnBnClickedButtonThree() {
 		SetDlgItemText(IDC_FIRSTNAMEEDIT, "PLEASE");
 		SetDlgItemText(IDC_LASTNAMEEDIT, "SEARCH");
 		SetDlgItemText(IDC_PhoneEdit, "A");
-		SetDlgItemText(IDC_ADDRESSEDIT, "PERSON");
-		SetDlgItemText(IDC_EMAILEDIT, "FIRST");
+		SetDlgItemText(IDC_ADDRESSEDIT, "VALID PERSON");
+		SetDlgItemText(IDC_EMAILEDIT, "FIRST!");
 	}
 
 	SetDlgItemText(IDC_NUMBEREDIT, "");
