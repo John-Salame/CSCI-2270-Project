@@ -304,14 +304,17 @@ void CMyForm::OnBnClickedButtonDelete() {
 }
 
 void CMyForm::MenuLoadHelper() {
-	//These functions are used for main menu ONLY
+//These functions are used for main menu ONLY
 	CString str = "Loading From File! ...";
+	
 	TRACE0("LOAD FILE FUNCTION CALLED");
+	iCloud.deleteEverything();
 	iCloud.loadAllFromFile();
 
 	str += _T("\r\n\r\n...Loaded!");
 	SetDlgItemText(IDC_MAIN_DISPLAY, str);
 	resetEditFields();
+
 }
 
 void CMyForm::MenuSaveHelper() {
