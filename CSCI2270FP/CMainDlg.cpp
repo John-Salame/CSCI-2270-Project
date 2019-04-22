@@ -24,6 +24,7 @@ BOOL CMainDlg::OnInitDialog() {
 
 void CMainDlg::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
+	//Sends messages to parent
 	DDX_Control(pDX, IDC_MAIN_DISPLAY, m_MainDisplay); //Main Display
 	DDX_Control(pDX, IDC_USEREDIT_SEARCH, m_UserEdit); //UserEdit
 	DDX_Control(pDX, IDC_FIRSTNAMEEDIT, m_FirstName);
