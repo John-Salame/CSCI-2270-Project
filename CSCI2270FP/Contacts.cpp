@@ -10,6 +10,21 @@ Contacts::Contacts() {
 	currentlySortedBy = &firstNameRoot; //point to the firstNameRoot pointer so we sort by first names when we start the program
 }
 
+//destructor
+Contacts::~Contacts()
+{
+	deleteEverything();
+}
+
+//delete everything from every tree
+void Contacts::deleteEverything()
+{
+	while (firstNameRoot != 0)
+	{
+		deleteFromAllTrees(firstNameRoot->c, true);
+	}
+}
+
 //// //// /////
 //// PRINTING
 void printInOrder(treeNode* curr) { // prints all entries inOrder based on which root is given to it.

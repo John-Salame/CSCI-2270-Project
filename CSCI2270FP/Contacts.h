@@ -31,6 +31,8 @@ struct treeNode { // used to build tree of contacts, built as if the tree is org
 class Contacts {
 public:
 	Contacts();
+	~Contacts();
+	void deleteEverything();
 	void printAllContacts(); //this works for any tree
 	void createContact(); //create a contact from user input and return the pointer. Can be called as Contacts::createContact() instead of dot notation.
 	void createContact(std::string firstName, std::string lastName, std::string phoneNumber, std::string birthdate, std::string address, std::string email);
