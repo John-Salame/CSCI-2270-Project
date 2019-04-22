@@ -20,17 +20,16 @@ END_MESSAGE_MAP()
 
 
 BOOL CMyApp::InitInstance() {
-	SetRegistryKey(_T("Unhappy :<"));
-
-	CMyWindow* pFrame = new CMyWindow;
+	CMyWindow* pFrame = new CMyWindow; //Create the CFrameWnd
 	if (!pFrame) {
 		return FALSE;
 	}
 	m_pMainWnd = pFrame;
-	pFrame->LoadFrame(IDR_MAINMENU);
+	pFrame->LoadFrame(IDR_MAINMENU); //Load menu bar
 
-	pFrame->ShowWindow(SW_SHOW);
-	pFrame->UpdateWindow();
+	pFrame->ShowWindow(SW_SHOW); //Show wnd
+	pFrame->UpdateWindow(); //Update wnd
+	pFrame->SetWindowTextA("Hello Happy Contacts!"); //Set wnd text
 
 	return TRUE;
 }
