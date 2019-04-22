@@ -29,8 +29,8 @@ int CMyWindow::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 	}
 
 	CCreateContext ccx;
-	ccx.m_pNewViewClass = RUNTIME_CLASS(CMyForm);
-	m_pMainView = DYNAMIC_DOWNCAST(CMyForm, this->CreateView(&ccx));
+	ccx.m_pNewViewClass = RUNTIME_CLASS(CMyForm); //Get run time structure of CMyForm
+	m_pMainView = DYNAMIC_DOWNCAST(CMyForm, this->CreateView(&ccx)); //Downcast
 
 	if (m_pMainView == NULL) {
 		TRACE0("Form View Creation Failed!\n");

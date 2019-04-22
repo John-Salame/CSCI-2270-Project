@@ -29,7 +29,8 @@ BOOL CMyApp::InitInstance() {
 
 	pFrame->ShowWindow(SW_SHOW); //Show wnd
 	pFrame->UpdateWindow(); //Update wnd
-	pFrame->SetWindowTextA("Hello Happy Contacts!"); //Set wnd text
+	pFrame->SetWindowTextA("Hello, Happy Contacts!"); //Set wnd text
+
 
 	return TRUE;
 }
