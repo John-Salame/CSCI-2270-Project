@@ -3,31 +3,40 @@
 #include <fstream>
 #include <sstream>
 
+//Constructor 
 Contacts::Contacts() {
-	firstNameRoot = nullptr;
-	lastNameRoot = nullptr;
-	birthdateRoot = nullptr;
+	firstNameRoot = nullptr; // root of the tree sorted by first name
+	lastNameRoot = nullptr; // root of the tree sorted by last name
+	birthdateRoot = nullptr; // root of the tree sorted by birthdate
 	currentlySortedBy = &firstNameRoot; //point to the firstNameRoot pointer so we sort by first names when we start the program
 }
 
-//destructor
-Contacts::~Contacts()
-{
-	deleteEverything();
-}
+//Delete everything from every tree
+void Contacts::deleteEverything(){
+	while (firstNameRoot != 0){ 
 
-//delete everything from every tree
-void Contacts::deleteEverything()
-{
-	while (firstNameRoot != 0)
-	{
+		/** While the root of the first name tree (meaning all of the trees) isn't null,
+		delete the contact by telling deleteFromAllTrees to delete the contact located at
+		the root*/
+
 		deleteFromAllTrees(firstNameRoot->c, true);
 	}
+}
+
+//Destructor
+Contacts::~Contacts(){
+	deleteEverything(); // calls deleteEverything
 }
 
 //// //// /////
 //// PRINTING
 void printInOrder(treeNode* curr) { // prints all entries inOrder based on which root is given to it.
+
+	/** function prints all of the contacts currently stored based on
+	which tree the data is currently being sorted by. This is irrelevant
+	in the final program, as the final doesn't use printing (since this
+	is for command line only)*/
+
 	if (curr == nullptr) {
 		return;
 	}
@@ -62,15 +71,15 @@ void printInOrder(treeNode* curr) { // prints all entries inOrder based on which
 
 void Contacts::printAllContacts() { // prints all of the contacts in the tree.
 	std::cout << "By First Name -- " << std::endl;
-	printInOrder(firstNameRoot);
+	printInOrder(firstNameRoot); // Called with the first name root so it prints out by first name
 	std::cout << "By Last Name -- " << std::endl;
-	printInOrder(lastNameRoot);
+	printInOrder(lastNameRoot); // Called with the last name root so it prints out by last name
 	std::cout << "By Birthdate hehe --" << std::endl;
-	printInOrder(birthdateRoot);
+	printInOrder(birthdateRoot); // Called with the birthdate root so it prints out by birthdate
 }
 
 //In the future, this will show every aspect of the contact on the GUI. This might actually just be another form of editContact.
-void Contacts::displayDetailedContact(Contact* c) {
+void Contacts::displayDetailedContact(Contact* c) { // When this is called, detailed information is displayed. Not neccessary for GUI.
 	std::cout << "Showing information for Contact:" << std::endl;
 	std::cout << "    First Name: " << c->firstName << std::endl;
 	std::cout << "    Last Name: " << c->lastName << std::endl;
@@ -93,6 +102,13 @@ std::string toLowercase(std::string x) { // takes a string, replaces it with low
 }
 
 void inOrderSave(treeNode* curr, std::ofstream& saveStream) {
+	/**This is the saving function. It traverses the firstname tree recursively,
+	and writes the information to a file called saveFile.csv (saveStream ofstream)
+	
+	An entry looks like this:  First*Last*PhoneNum*Birthdate*Address*e-mail
+	
+	*/
+
 	if (curr == nullptr) {
 		return;
 	}
@@ -144,19 +160,23 @@ void inOrderSave(treeNode* curr, std::ofstream& saveStream) {
 }
 
 bool Contacts::saveAllToFile(std::string fileName) {
-	std::ofstream saveStream;
-	saveStream.open("savefile.csv");
-	if (saveStream.is_open()) {
+	std::ofstream saveStream; // saveStream
+	saveStream.open("savefile.csv"); // opens savefile.csv
+	if (saveStream.is_open()) { // if the ofstream was successfully opened
 		inOrderSave(firstNameRoot, saveStream);
 	}
 	else {
-		return false; // save stream couldn't be opened.
+		return false; // save stream couldn't be opened. (file might not exist)
 	}
-	saveStream.close();
+	saveStream.close(); // closes the ofstream
 	return true;
 }
 
 bool Contacts::loadAllFromFile() {
+	/*simply reads file line by line, places the split words
+	into the different variables, then the variables are used
+	as parameters to create a new contact.*/
+
 	std::string line;
 	std::string splitWord;
 
@@ -227,7 +247,6 @@ bool Contacts::loadAllFromFile() {
 
 //// //// /////
 //// SEARCHING
-
 
 //nodeSub and userInput are both lowercase
 void Contacts::searchByFirstName(std::string userInput, treeNode* parse) {  // goes through firstName tree
@@ -319,7 +338,13 @@ void Contacts::searchByBirthdate(std::string userInput, treeNode* parse) { // go
 
 } //end of searchByBirthdate
 
-void Contacts::addToSearchResults(treeNode* pointer) {
+void Contacts::addToSearchResults(treeNode* pointer) { 
+	/** If a contact is found that matches, add it to the search results vector. 
+	This function makes sure that the contact doesn't already exist within the 
+	results vector, as someone might have 2 matching search terms that would put
+	the contact into the results vector normally. */
+
+
 	for (int i = 0; i < searchResults.size(); i++) {
 		if (searchResults[i] == pointer->c) {
 			return;
@@ -329,12 +354,13 @@ void Contacts::addToSearchResults(treeNode* pointer) {
 }
 
 void Contacts::clearSearchResults() {
+	// simply clears the vector by popping until the length is 0.
 	while (searchResults.size() > 0) {
 		searchResults.pop_back();
 	}
 }
 
-void Contacts::search() {
+void Contacts::search() { // Search function that's BASICALLY obselete given the GUI.
 	std::cout << "Type your search term. Search by first name, last name, or phone number, but not full name." << std::endl;
 	std::string userInput = "";
 	std::cin >> userInput;
@@ -391,10 +417,13 @@ void Contacts::search() {
 * PURPOSE: Add matches to the searchResults member variable of Contacts.
 */
 void Contacts::search(std::string userInput) {
+	/** search function the GUI uses.*/
+
+
 	userInput = toLowercase(userInput);
 	clearSearchResults(); //clear search results before adding anything
 
-						  //these 3 functions add matches to searchResults member variable
+	//these 3 functions add matches to searchResults member variable
 	searchByFirstName(userInput, firstNameRoot);
 	searchByLastName(userInput, lastNameRoot);
 	searchByBirthdate(userInput, birthdateRoot);
@@ -556,7 +585,7 @@ void Contacts::addToBirthTree(treeNode* given) {
 
 //// //// /////
 //// ADD TO ALL TREES
-void Contacts::createContact() {
+void Contacts::createContact() { // for non-GUI only.
 	Contact* newContact = new Contact;
 
 	std::string input;
@@ -595,9 +624,10 @@ void Contacts::createContact() {
 	std::cout << std::endl << "Added " << newContact->firstName << " to your contact list!" << std::endl;
 }
 
+void Contacts::createContact(std::string firstName, std::string lastName, std::string phoneNumber, std::string birthdate, std::string address, std::string email){
+	/*Parameterized contact creator for the GUI to use.*/
 
-void Contacts::createContact(std::string firstName, std::string lastName, std::string phoneNumber, std::string birthdate, std::string address, std::string email)
-{
+
 	Contact* newContact = new Contact;
 
 	newContact->firstName = firstName;
@@ -626,7 +656,7 @@ void Contacts::createContact(std::string firstName, std::string lastName, std::s
 //// EDITING
 
 //FOR TESTING IN OLD MAIN
-void Contacts::editContact(Contact* editThis) {
+void Contacts::editContact(Contact* editThis) { // non-gui only.
 	std::string firstName;
 	std::cout << "What is the new contact's first name? : ";
 	std::cin >> firstName;
@@ -668,7 +698,7 @@ void Contacts::editContact(Contact* editThis) {
 	postEdit(editThis);
 }
 
-//OVERLOADED FOR IN JI. PASS IN POINTER TO CONTACT YOU WANT TO EDIT, THEN NAME, ETC.
+//OVERLOADED FOR GUI. PASS IN POINTER TO CONTACT YOU WANT TO EDIT, THEN NAME, ETC.
 void Contacts::editContact(Contact* editThis, std::string firstName, std::string lastName, std::string phoneNumber, std::string birthdate, std::string address, std::string email) {
 	editThis->firstName = firstName;
 	editThis->lastName = lastName;
@@ -796,8 +826,9 @@ void Contacts::deleteTreeNode(treeNode* del) {
 
 
 //delete all the treeNodes with Contact c, then delete the contact from the heap if deleteContact is true
-void Contacts::deleteFromAllTrees(Contact* c, bool deleteContact)
-{
+void Contacts::deleteFromAllTrees(Contact* c, bool deleteContact){
+	
+
 	treeNode** previouslySortedBy = currentlySortedBy;
 
 	currentlySortedBy = &firstNameRoot;

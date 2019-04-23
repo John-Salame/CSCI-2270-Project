@@ -29,8 +29,8 @@ int CMyWindow::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 	}
 
 	CCreateContext ccx;
-	ccx.m_pNewViewClass = RUNTIME_CLASS(CMyForm);
-	m_pMainView = DYNAMIC_DOWNCAST(CMyForm, this->CreateView(&ccx));
+	ccx.m_pNewViewClass = RUNTIME_CLASS(CMyForm); //Get run time structure of CMyForm
+	m_pMainView = DYNAMIC_DOWNCAST(CMyForm, this->CreateView(&ccx)); //Downcast
 
 	if (m_pMainView == NULL) {
 		TRACE0("Form View Creation Failed!\n");
@@ -54,9 +54,11 @@ CMyForm::~CMyForm() {
 }
 
 void CMyForm::resetEditFields() {
+	//Reset edit text bars
 	SetDlgItemText(IDC_FIRSTNAMEEDIT, "");
 	SetDlgItemText(IDC_LASTNAMEEDIT, "");
 	SetDlgItemText(IDC_PhoneEdit, "");
+	SetDlgItemText(IDC_BIRTHDATEPICK, "1/1/2011");
 	SetDlgItemText(IDC_ADDRESSEDIT, "");
 	SetDlgItemText(IDC_EMAILEDIT, "");
 }
@@ -182,7 +184,7 @@ void CMyForm::OnBnClickedButtonThree() {
 	}
 
 	//Get/Populate values
-	if (hasSearched && index > -1) {
+	if (hasSearched && index > -1 && index < iCloud.getSearchResults().size()) {
 		Contact* node = iCloud.getSearchResults()[index];
 		SetDlgItemText(IDC_FIRSTNAMEEDIT, node->firstName.c_str());
 		SetDlgItemText(IDC_LASTNAMEEDIT, node->lastName.c_str());
@@ -204,8 +206,8 @@ void CMyForm::OnBnClickedButtonThree() {
 		SetDlgItemText(IDC_FIRSTNAMEEDIT, "PLEASE");
 		SetDlgItemText(IDC_LASTNAMEEDIT, "SEARCH");
 		SetDlgItemText(IDC_PhoneEdit, "A");
-		SetDlgItemText(IDC_ADDRESSEDIT, "PERSON");
-		SetDlgItemText(IDC_EMAILEDIT, "FIRST");
+		SetDlgItemText(IDC_ADDRESSEDIT, "VALID PERSON");
+		SetDlgItemText(IDC_EMAILEDIT, "FIRST!");
 	}
 
 	SetDlgItemText(IDC_NUMBEREDIT, "");
@@ -214,67 +216,73 @@ void CMyForm::OnBnClickedButtonThree() {
 void CMyForm::OnBnClickedButtonFour() {
 	//Display sorted by First Name
 	TRACE0("BUTTON 4 // SORT BY FIRST NAME");
-	CString str;
-	iCloud.changeToFirstNames(); //Change setting to 1st name
-	iCloud.getContactsInOrder(inOrder);
+	if (!hasSelected) {
+		CString str;
+		iCloud.changeToFirstNames(); //Change setting to 1st name
+		iCloud.getContactsInOrder(inOrder);
 
-	str = "Here are the contacts sorted by First Name: \r\n";
-	for (int i = 0; i < inOrder.size(); i++) {
-		Contact* node = inOrder[i];
-		str = str + node->firstName.c_str();
-		str = str + _T(" ") + node->lastName.c_str();
-		str = str + _T("\r\n") + node->phoneNumber.c_str();
-		str = str + _T("\r\n") + node->birthdate.c_str();
-		str = str + _T("\r\n") + node->address.c_str();
-		str = str + _T("\r\n") + node->email.c_str();
-		str = str + _T("\r\n\r\n");
+		str = "Here are the contacts sorted by First Name: \r\n";
+		for (int i = 0; i < inOrder.size(); i++) {
+			Contact* node = inOrder[i];
+			str = str + node->firstName.c_str();
+			str = str + _T(" ") + node->lastName.c_str();
+			str = str + _T("\r\n") + node->phoneNumber.c_str();
+			str = str + _T("\r\n") + node->birthdate.c_str();
+			str = str + _T("\r\n") + node->address.c_str();
+			str = str + _T("\r\n") + node->email.c_str();
+			str = str + _T("\r\n\r\n");
+		}
+
+		SetDlgItemText(IDC_MAIN_DISPLAY, str);
 	}
-
-	SetDlgItemText(IDC_MAIN_DISPLAY, str);
 }
 
 void CMyForm::OnBnClickedButtonFive() {
 	//Display sorted by First Name
 	TRACE0("BUTTON 5 // SORT BY LAST NAME");
-	CString str;
-	iCloud.changeToLastNames(); //Change setting to 1st name
-	iCloud.getContactsInOrder(inOrder);
+	if (!hasSelected) {
+		CString str;
+		iCloud.changeToLastNames(); //Change setting to 1st name
+		iCloud.getContactsInOrder(inOrder);
 
-	str = "Here are the contacts sorted by Last Name: \r\n";
-	for (int i = 0; i < inOrder.size(); i++) {
-		Contact* node = inOrder[i];
-		str = str + node->firstName.c_str();
-		str = str + _T(" ") + node->lastName.c_str();
-		str = str + _T("\r\n") + node->phoneNumber.c_str();
-		str = str + _T("\r\n") + node->birthdate.c_str();
-		str = str + _T("\r\n") + node->address.c_str();
-		str = str + _T("\r\n") + node->email.c_str();
-		str = str + _T("\r\n\r\n");
+		str = "Here are the contacts sorted by Last Name: \r\n";
+		for (int i = 0; i < inOrder.size(); i++) {
+			Contact* node = inOrder[i];
+			str = str + node->firstName.c_str();
+			str = str + _T(" ") + node->lastName.c_str();
+			str = str + _T("\r\n") + node->phoneNumber.c_str();
+			str = str + _T("\r\n") + node->birthdate.c_str();
+			str = str + _T("\r\n") + node->address.c_str();
+			str = str + _T("\r\n") + node->email.c_str();
+			str = str + _T("\r\n\r\n");
+		}
+
+		SetDlgItemText(IDC_MAIN_DISPLAY, str);
 	}
-
-	SetDlgItemText(IDC_MAIN_DISPLAY, str);
 }
 
 void CMyForm::OnBnClickedButtonSix() {
 	//Display sorted by First Name
 	TRACE0("BUTTON 6 // SORT BY BIRTHDATE");
-	CString str;
-	iCloud.changeToBirthdates(); //Change setting to 1st name
-	iCloud.getContactsInOrder(inOrder);
+	if (!hasSelected) {
+		CString str;
+		iCloud.changeToBirthdates(); //Change setting to 1st name
+		iCloud.getContactsInOrder(inOrder);
 
-	str = "Here are the contacts sorted by Birth Date: \r\n";
-	for (int i = 0; i < inOrder.size(); i++) {
-		Contact* node = inOrder[i];
-		str = str + node->firstName.c_str();
-		str = str + _T(" ") + node->lastName.c_str();
-		str = str + _T("\r\n") + node->phoneNumber.c_str();
-		str = str + _T("\r\n") + node->birthdate.c_str();
-		str = str + _T("\r\n") + node->address.c_str();
-		str = str + _T("\r\n") + node->email.c_str();
-		str = str + _T("\r\n\r\n");
+		str = "Here are the contacts sorted by Birth Date: \r\n";
+		for (int i = 0; i < inOrder.size(); i++) {
+			Contact* node = inOrder[i];
+			str = str + node->firstName.c_str();
+			str = str + _T(" ") + node->lastName.c_str();
+			str = str + _T("\r\n") + node->phoneNumber.c_str();
+			str = str + _T("\r\n") + node->birthdate.c_str();
+			str = str + _T("\r\n") + node->address.c_str();
+			str = str + _T("\r\n") + node->email.c_str();
+			str = str + _T("\r\n\r\n");
+		}
+
+		SetDlgItemText(IDC_MAIN_DISPLAY, str);
 	}
-
-	SetDlgItemText(IDC_MAIN_DISPLAY, str);
 }
 
 void CMyForm::OnBnClickedButtonDelete() {
@@ -304,14 +312,17 @@ void CMyForm::OnBnClickedButtonDelete() {
 }
 
 void CMyForm::MenuLoadHelper() {
-	//These functions are used for main menu ONLY
+//These functions are used for main menu ONLY
 	CString str = "Loading From File! ...";
+	
 	TRACE0("LOAD FILE FUNCTION CALLED");
+	iCloud.deleteEverything();
 	iCloud.loadAllFromFile();
 
 	str += _T("\r\n\r\n...Loaded!");
 	SetDlgItemText(IDC_MAIN_DISPLAY, str);
 	resetEditFields();
+
 }
 
 void CMyForm::MenuSaveHelper() {
