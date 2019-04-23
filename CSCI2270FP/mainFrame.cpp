@@ -179,7 +179,7 @@ void CMyForm::OnBnClickedButtonThree() {
 		index -= 1;
 	}
 	catch (...) {
-		MessageBox("You need to put in a value greater than 0!");
+		MessageBox("You need to put in a value!");
 		index = -1;
 	}
 
@@ -204,7 +204,7 @@ void CMyForm::OnBnClickedButtonThree() {
 	}
 	else {
 		resetEditFields();
-		str = "Please search an existing person first!";
+		str = "Please search for an existing person first!";
 		SetDlgItemText(IDC_MAIN_DISPLAY, str);
 	}
 
