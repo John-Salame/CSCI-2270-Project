@@ -66,30 +66,32 @@ void CMyForm::resetEditFields() {
 
 void CMyForm::OnBnClickedButtonOne() {
 	//To be: Search
-	TRACE0("BUTTON1 PRESSED");
-	CString str;
-	CString number;
-	GetDlgItemText(IDC_USEREDIT_SEARCH, str);
-	SetDlgItemText(IDC_USEREDIT_SEARCH, "");
-	std::string searchContact = (LPCSTR)str;
-	iCloud.search(searchContact);
+	if (!hasSelected) {
+		TRACE0("BUTTON1 PRESSED");
+		CString str;
+		CString number;
+		GetDlgItemText(IDC_USEREDIT_SEARCH, str);
+		SetDlgItemText(IDC_USEREDIT_SEARCH, "");
+		std::string searchContact = (LPCSTR)str;
+		iCloud.search(searchContact);
 
-	str = "Here are the Search Results: \r\n";
+		str = "Here are the Search Results: \r\n";
 
-	for (int i = 0; i < iCloud.getSearchResults().size(); i++) {
-		Contact* node = iCloud.getSearchResults()[i];
-		number.Format("Search Result Number %d :\r\n", i + 1);
-		str = str + number + node->firstName.c_str();
-		str = str + _T(" ") + node->lastName.c_str();
-		str = str + _T("\r\n") + node->phoneNumber.c_str();
-		str = str + _T("\r\n") + node->birthdate.c_str();
-		str = str + _T("\r\n") + node->address.c_str();
-		str = str + _T("\r\n") + node->email.c_str();
-		str = str + _T("\r\n\r\n");
+		for (int i = 0; i < iCloud.getSearchResults().size(); i++) {
+			Contact* node = iCloud.getSearchResults()[i];
+			number.Format("Search Result Number %d :\r\n", i + 1);
+			str = str + number + node->firstName.c_str();
+			str = str + _T(" ") + node->lastName.c_str();
+			str = str + _T("\r\n") + node->phoneNumber.c_str();
+			str = str + _T("\r\n") + node->birthdate.c_str();
+			str = str + _T("\r\n") + node->address.c_str();
+			str = str + _T("\r\n") + node->email.c_str();
+			str = str + _T("\r\n\r\n");
+		}
+
+		hasSearched = true;
+		SetDlgItemText(IDC_MAIN_DISPLAY, str);
 	}
-
-	hasSearched = true;
-	SetDlgItemText(IDC_MAIN_DISPLAY, str);
 }
 
 
@@ -134,6 +136,7 @@ void CMyForm::OnBnClickedButtonTwo() {
 		SetDlgItemText(IDC_MAIN_DISPLAY, str);
 	}
 	else if (hasSearched == true && hasSelected == true && index > -1) {
+		//Contacts editing
 		if (index < iCloud.getSearchResults().size()) {
 			TRACE0("EDITING A CONTACT!");
 			Contact* node = iCloud.getSearchResults()[index];
@@ -156,9 +159,6 @@ void CMyForm::OnBnClickedButtonTwo() {
 			hasSearched = false;
 			hasSelected = false;
 		}
-		else {
-			SetDlgItemText(IDC_MAIN_DISPLAY, "CANNOT EDIT");
-		}
 	}
 	
 	TRACE0("RESET INPUT TO EMPTY");
@@ -172,8 +172,8 @@ void CMyForm::OnBnClickedButtonThree() {
 	GetDlgItemText(IDC_NUMBEREDIT, str);
 	std::string selected_num = (LPCSTR)str;
 	index = -1;
-	//Redundant block, already prevents negatives and non numerical
-	//Delete later
+
+	//Check for empty
 	try {
 		index = stoi(selected_num);
 		index -= 1;
@@ -203,11 +203,9 @@ void CMyForm::OnBnClickedButtonThree() {
 		hasSelected = true;
 	}
 	else {
-		SetDlgItemText(IDC_FIRSTNAMEEDIT, "PLEASE");
-		SetDlgItemText(IDC_LASTNAMEEDIT, "SEARCH");
-		SetDlgItemText(IDC_PhoneEdit, "A");
-		SetDlgItemText(IDC_ADDRESSEDIT, "VALID PERSON");
-		SetDlgItemText(IDC_EMAILEDIT, "FIRST!");
+		resetEditFields();
+		str = "Please search an existing person first!";
+		SetDlgItemText(IDC_MAIN_DISPLAY, str);
 	}
 
 	SetDlgItemText(IDC_NUMBEREDIT, "");
@@ -313,26 +311,30 @@ void CMyForm::OnBnClickedButtonDelete() {
 
 void CMyForm::MenuLoadHelper() {
 //These functions are used for main menu ONLY
-	CString str = "Loading From File! ...";
-	
-	TRACE0("LOAD FILE FUNCTION CALLED");
-	iCloud.deleteEverything();
-	iCloud.loadAllFromFile();
+	if (!hasSelected) {
+		CString str = "Loading From File! ...";
 
-	str += _T("\r\n\r\n...Loaded!");
-	SetDlgItemText(IDC_MAIN_DISPLAY, str);
-	resetEditFields();
+		TRACE0("LOAD FILE FUNCTION CALLED");
+		iCloud.deleteEverything();
+		iCloud.loadAllFromFile();
+
+		str += _T("\r\n\r\n...Loaded!");
+		SetDlgItemText(IDC_MAIN_DISPLAY, str);
+		resetEditFields();
+	}
 
 }
 
 void CMyForm::MenuSaveHelper() {
 	//These functions are used for main menu ONLY
-	CString str = "Saving to File! ...";
-	TRACE0("SAVE FILE FUNCTION CALLED");
-	iCloud.saveAllToFile("savefile.csv");
+	if (!hasSelected) {
+		CString str = "Saving to File! ...";
+		TRACE0("SAVE FILE FUNCTION CALLED");
+		iCloud.saveAllToFile("savefile.csv");
 
-	str += _T("\r\n\r\n...Saved!");
-	resetEditFields();
+		str += _T("\r\n\r\n...Saved!");
+		resetEditFields();
+	}
 }
 
 
