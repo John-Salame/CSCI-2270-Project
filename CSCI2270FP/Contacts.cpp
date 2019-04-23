@@ -3,7 +3,7 @@
 #include <fstream>
 #include <sstream>
 
-//Constructor 
+//Constructor
 Contacts::Contacts() {
 	firstNameRoot = nullptr; // root of the tree sorted by first name
 	lastNameRoot = nullptr; // root of the tree sorted by last name
@@ -12,8 +12,8 @@ Contacts::Contacts() {
 }
 
 //Delete everything from every tree
-void Contacts::deleteEverything(){
-	while (firstNameRoot != 0){ 
+void Contacts::deleteEverything() {
+	while (firstNameRoot != 0) {
 
 		/** While the root of the first name tree (meaning all of the trees) isn't null,
 		delete the contact by telling deleteFromAllTrees to delete the contact located at
@@ -24,7 +24,7 @@ void Contacts::deleteEverything(){
 }
 
 //Destructor
-Contacts::~Contacts(){
+Contacts::~Contacts() {
 	deleteEverything(); // calls deleteEverything
 }
 
@@ -104,9 +104,9 @@ std::string toLowercase(std::string x) { // takes a string, replaces it with low
 void inOrderSave(treeNode* curr, std::ofstream& saveStream) {
 	/**This is the saving function. It traverses the firstname tree recursively,
 	and writes the information to a file called saveFile.csv (saveStream ofstream)
-	
+
 	An entry looks like this:  First*Last*PhoneNum*Birthdate*Address*e-mail
-	
+
 	*/
 
 	if (curr == nullptr) {
@@ -288,7 +288,7 @@ void Contacts::searchByLastName(std::string userInput, treeNode* parse) { // goe
 
 	std::string nodeSub = toLowercase(parse->c->lastName.substr(0, len));
 
-	//only go left if the current node's first name is not < search term
+	//only go left if the current node's last name is not < search term
 	if (parse->leftChild != 0 && nodeSub >= userInput)
 	{
 		searchByLastName(userInput, parse->leftChild);
@@ -300,7 +300,7 @@ void Contacts::searchByLastName(std::string userInput, treeNode* parse) { // goe
 		addToSearchResults(parse);
 	}
 
-	//only go right if the current node's first name is not > search term
+	//only go right if the current node's last name is not > search term
 	if (parse->rightChild != 0 && nodeSub <= userInput)
 	{
 		searchByLastName(userInput, parse->rightChild);
@@ -308,6 +308,8 @@ void Contacts::searchByLastName(std::string userInput, treeNode* parse) { // goe
 
 } //end of searchByLastName
 
+
+//search through the whole tree and find matches based on month, day, and year
 void Contacts::searchByBirthdate(std::string userInput, treeNode* parse) { // goes through birthdate tree
 
 	if (parse == 0) {
@@ -315,32 +317,46 @@ void Contacts::searchByBirthdate(std::string userInput, treeNode* parse) { // go
 	}
 
 	int len = userInput.length();
+	std::string bday = parse->c->birthdate;
 
-	std::string nodeSub = toLowercase(parse->c->birthdate.substr(0, len));
+	std::stringstream parseDate(bday);
+	std::string pMon;
+	std::string pDay;
+	std::string pYr;
+	std::getline(parseDate, pMon, '/');
+	std::getline(parseDate, pDay, '/');
+	std::getline(parseDate, pYr);
 
-	//only go left if the current node's first name is not < search term
-	if (parse->leftChild != 0 && nodeSub >= userInput)
+	//first part of in-order traversal
+	searchByBirthdate(userInput, parse->leftChild);
+
+
+	//in-order: instead of printing, add to vector if the input is any part of the date.
+	if (bday.length() >= userInput.length() && bday.substr(0, len) == userInput)
 	{
-		searchByBirthdate(userInput, parse->leftChild);
+		addToSearchResults(parse);
 	}
-
-	//in-order: instead of printing, add to vector
-	if (nodeSub == userInput)
+	else if (pMon.length() >= userInput.length() && pMon.substr(0, len) == userInput)
+	{
+		addToSearchResults(parse);
+	}
+	else if (pDay.length() >= userInput.length() && pDay.substr(0, len) == userInput)
+	{
+		addToSearchResults(parse);
+	}
+	else if (pYr.length() >= userInput.length() && pYr.substr(0, len) == userInput)
 	{
 		addToSearchResults(parse);
 	}
 
-	//only go right if the current node's first name is not > search term
-	if (parse->rightChild != 0 && nodeSub <= userInput)
-	{
-		searchByBirthdate(userInput, parse->rightChild);
-	}
+	//final part of in-order traversal
+	searchByBirthdate(userInput, parse->rightChild);
 
 } //end of searchByBirthdate
 
-void Contacts::addToSearchResults(treeNode* pointer) { 
-	/** If a contact is found that matches, add it to the search results vector. 
-	This function makes sure that the contact doesn't already exist within the 
+void Contacts::addToSearchResults(treeNode* pointer) {
+	/** If a contact is found that matches, add it to the search results vector.
+	This function makes sure that the contact doesn't already exist within the
 	results vector, as someone might have 2 matching search terms that would put
 	the contact into the results vector normally. */
 
@@ -369,7 +385,11 @@ void Contacts::search() { // Search function that's BASICALLY obselete given the
 
 	searchByFirstName(userInput, firstNameRoot);
 	searchByLastName(userInput, lastNameRoot);
-	searchByBirthdate(userInput, birthdateRoot);
+	if (userInput.length() != 0 && userInput[0] <= '9' && userInput[0] >= '0')
+	{
+		searchByBirthdate(userInput, birthdateRoot);
+	}
+
 
 	if (searchResults.size() == 0) {
 		std::cout << "No contacts were found!" << std::endl;
@@ -426,7 +446,10 @@ void Contacts::search(std::string userInput) {
 	//these 3 functions add matches to searchResults member variable
 	searchByFirstName(userInput, firstNameRoot);
 	searchByLastName(userInput, lastNameRoot);
-	searchByBirthdate(userInput, birthdateRoot);
+	if (userInput.length() != 0 && userInput[0] <= '9' && userInput[0] >= '0')
+	{
+		searchByBirthdate(userInput, birthdateRoot);
+	}
 
 	if (searchResults.size() == 0) {
 		std::cout << "No contacts were found!" << std::endl;
@@ -624,7 +647,7 @@ void Contacts::createContact() { // for non-GUI only.
 	std::cout << std::endl << "Added " << newContact->firstName << " to your contact list!" << std::endl;
 }
 
-void Contacts::createContact(std::string firstName, std::string lastName, std::string phoneNumber, std::string birthdate, std::string address, std::string email){
+void Contacts::createContact(std::string firstName, std::string lastName, std::string phoneNumber, std::string birthdate, std::string address, std::string email) {
 	/*Parameterized contact creator for the GUI to use.*/
 
 
@@ -648,7 +671,7 @@ void Contacts::createContact(std::string firstName, std::string lastName, std::s
 	addToFirstTree(firstNode);
 	addToLastTree(lastNode);
 	addToBirthTree(birthNode);
-	TRACE0("ADDED NEW CONTACT");
+	//TRACE0("ADDED NEW CONTACT");
 	std::cout << std::endl << "Added " << newContact->firstName << " to your contact list!" << std::endl;
 }
 
@@ -791,15 +814,15 @@ void Contacts::deleteTreeNode(treeNode* del) {
 			rep->rightChild = del->rightChild;
 		}
 
-    //finally, make the new children of rep point to it as a parent
-    if(rep->leftChild != 0)
-    {
-      rep->leftChild->parent = rep;
-    }
-    if(rep->rightChild != 0)
-    {
-      rep->rightChild->parent = rep;
-    }
+		//finally, make the new children of rep point to it as a parent
+		if (rep->leftChild != 0)
+		{
+			rep->leftChild->parent = rep;
+		}
+		if (rep->rightChild != 0)
+		{
+			rep->rightChild->parent = rep;
+		}
 	} //end of code for if replacement exists
 
 
@@ -826,8 +849,8 @@ void Contacts::deleteTreeNode(treeNode* del) {
 
 
 //delete all the treeNodes with Contact c, then delete the contact from the heap if deleteContact is true
-void Contacts::deleteFromAllTrees(Contact* c, bool deleteContact){
-	
+void Contacts::deleteFromAllTrees(Contact* c, bool deleteContact) {
+
 
 	treeNode** previouslySortedBy = currentlySortedBy;
 
@@ -851,7 +874,7 @@ void Contacts::deleteFromAllTrees(Contact* c, bool deleteContact){
 //HELPER FUNCTION FOR getContactsInOrder
 void getInOrder(treeNode* parse, std::vector<Contact*>& vec)
 {
-	if(parse == 0)
+	if (parse == 0)
 	{
 		return;
 	}
@@ -874,7 +897,7 @@ std::vector<Contact*> Contacts::getSearchResults()
 void Contacts::getContactsInOrder(std::vector<Contact*>& vec)
 {
 	//clear the vector
-	while(vec.size() > 0)
+	while (vec.size() > 0)
 	{
 		vec.pop_back();
 	}
